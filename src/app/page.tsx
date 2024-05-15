@@ -1,113 +1,181 @@
-import Image from "next/image";
+"use client"
 
-export default function Home() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+import {
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table"
+import { Button } from "@/components/ui/button"
+import { useEffect, useState } from "react"
+
+
+function getRandomCharacter() {
+    const characters = ["A", "B", "C", "D", "E"];
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    return characters[randomIndex];
+}
+
+function countBelow7(seed: any) {
+    let count = 0;
+    for (let char of seed) {
+        if (!isNaN(char) && parseInt(char) < 7) {
+            count++;
+        }
+    }
+    return count;
+}
+
+function count7OrAbove(seed: any) {
+    let count = 0;
+    for (let char of seed) {
+        if (!isNaN(char) && parseInt(char) >= 7) {
+            count++;
+        }
+    }
+    return count;
+}
+
+export default function Page() {
+    const [receivedJson, setReceivedJson] = useState(null)
+    const [hasilResponse, setHasilResponse] = useState([])
+    const [profesi, setProfesi] = useState([])
+    const fetchUser = async () => {
+        try {
+            // const response = await fetch(`${process.env.URL}/api/random-users`)
+            const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/random-users`, { cache: 'no-store' })
+            const data = await response.json()
+            setReceivedJson(data)
+        } catch (error) {
+            console.error("Error fetching user:", error)
+        }
+    }
+
+
+
+    useEffect(() => {
+        const fetchProfesi = async () => {
+            try {
+                // const response = await fetch(`${process.env.URL}/api/random-users`)
+                const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/profesi`, { cache: 'no-store' })
+                const data = await response.json()
+                setProfesi(data)
+            } catch (error) {
+                console.error("Error fetching user:", error)
+            }
+        }
+        const fetchHasilResponse = async () => {
+            try {
+                // const response = await fetch(`${process.env.URL}/api/random-users`)
+                const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/hasil-response`, { cache: 'no-store' })
+                const data = await response.json()
+                setHasilResponse(data)
+            } catch (error) {
+                console.error("Error fetching user:", error)
+            }
+        }
+        const postResponse = async () => {
+            if (receivedJson) {
+                const result = {
+                    "jenis_kelamin_kode": receivedJson.data.results[0].gender == "male" ? "1" : "2",
+                    "nama": receivedJson.data.results[0].name.first || "",
+                    "nama_jalan": receivedJson.data.results[0].location.street.name || "",
+                    "email": receivedJson.data.results[0].email || "",
+                    "angka_kurang": countBelow7(receivedJson.data.info.seed),
+                    "angka_lebih": count7OrAbove(receivedJson.data.info.seed),
+                    "profesi_kode": getRandomCharacter() || "",
+                    "plain_json": JSON.stringify(receivedJson) || "",
+                }
+                try {
+                    const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/hasil-response`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(result)
+                    })
+                    const data = await response.json()
+                    console.log(JSON.stringify(data))
+                } catch (error) {
+                    console.error("Error posting data:", error)
+                }
+            }
+        }
+        const fetchData = async () => {
+            await postResponse(); // Wait for postResponse to finish before proceeding
+            fetchHasilResponse(); // Now call fetchHasilResponse
+            fetchProfesi();
+            console.log("hasil response = " + hasilResponse);
+        };
+
+        fetchData();
+        console.log("hasil response = " + hasilResponse)
+    }, [receivedJson])
+
+    return (
+        <div className="flex flex-col px-20 text-center gap-10 p-10 ">
+            <h1>PRE TEST 1  </h1>
+            <Button variant="outline" onClick={fetchUser}>Click to add user from randomuser</Button>
+            <pre className="border-4 border-indigo-600 whitespace-pre-wrap break-words bg-gray-100 p-4">{JSON.stringify(receivedJson)}</pre>
+            <h2>TABEL HASIL RESPONSE</h2>
+            <Table className="border-4 border-indigo-600">
+                <TableHeader>
+                    <TableRow>
+                        <TableHead className="text-center">no</TableHead>
+                        <TableHead className="text-center">nama</TableHead>
+                        <TableHead className="text-center">jenis_kelamin</TableHead>
+                        <TableHead className="text-center">jalan</TableHead>
+                        <TableHead className="text-center">email</TableHead>
+                        <TableHead className="text-center">profesi</TableHead>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+
+                    {
+                        hasilResponse.map((item, index) => (
+                            <>
+                                <TableRow key={index}>
+                                    <TableCell className="font-medium">{item.id}</TableCell>
+                                    <TableCell>{item.nama}</TableCell>
+                                    <TableCell>{item.jenis_kelamin_kode}</TableCell>
+                                    <TableCell>{item.nama_jalan}</TableCell>
+                                    <TableCell>{item.email}</TableCell>
+                                    <TableCell>{item.profesi_kode}</TableCell>
+                                </TableRow>
+                            </>
+                        ))
+                    }
+
+                </TableBody>
+            </Table>
+            <h2>TABEL PROFESI</h2>
+            <Table className="border-4 border-indigo-600">
+                <TableHeader>
+                    <TableRow>
+                        <TableHead className="text-center">no</TableHead>
+                        <TableHead className="text-center">profesi</TableHead>
+                        <TableHead className="text-center">jumlah</TableHead>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+
+                    {
+                        profesi.map((item, index) => (
+                            <>
+                                <TableRow key={index}>
+                                    <TableCell className="font-medium">{item.id}</TableCell>
+                                    <TableCell>{item.nama_profesi}</TableCell>
+                                    <TableCell>{item._count.hasil_response}</TableCell>
+                                </TableRow>
+                            </>
+                        ))
+                    }
+
+                </TableBody>
+            </Table>
         </div>
-      </div>
-
-      <div className="relative z-[-1] flex place-items-center before:absolute before:h-[300px] before:w-full before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 sm:before:w-[480px] sm:after:w-[240px] before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-balance text-sm opacity-50">
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  );
+    )
 }
