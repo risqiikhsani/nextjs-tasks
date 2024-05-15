@@ -5,7 +5,7 @@
 Maaf saya menggunakan nextjs / reactjs tanpa laravel.
 Karena saya belum pernah pakai laravel dan belum memiliki waktu luang untuk mempelajari nya.
 Dan saya juga lebih memiliki minat dengan bahasa selain PHP seperti Python,golang,javascript,NET,dll
-tetapi saya telah mengerjakan Pretest 1, terimakasih.
+tetapi saya telah mengerjakan Pretest 1, semoga saya diterima, terimakasih.
 
 
 Sebelum menjalankan
