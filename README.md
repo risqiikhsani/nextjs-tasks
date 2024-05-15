@@ -9,7 +9,7 @@ Sebelum menjalankan
 
 ```bash
 npm install
-npx prisma migrate dev
+npx prisma migrate dev --name init
 npx prisma migrate reset
 
 ```
