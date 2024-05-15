@@ -26,4 +26,5 @@ pnpm dev
 bun dev
 ```
 
+jalankan di [localhost](http://localhost:3000/)
 database dump location = /prisma/db.sql
