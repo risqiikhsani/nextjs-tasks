@@ -30,7 +30,10 @@ export default function RootLayout({
           fontSans.variable
         )}
       >
+        <div className="container py-10">
         {children}
+        </div>
+
       </body>
     </html>
   );

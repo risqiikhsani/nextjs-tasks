@@ -2,41 +2,18 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 async function main() {
 
-  const jenisKelamin = [
+  const postsData = [
     {
-      "kode": "1",
-      "jenis_kelamin": "laki-laki"
+      "title": "coba 1",
+      "text":"coba 1 text"
     },
     {
-      "kode": "2",
-      "jenis_kelamin": "perempuan"
+      "title": "coba 2",
+      "text":"coba 2 text"
     },
   ]
-  const seed1 = await prisma.jenisKelamin.createMany({ data: jenisKelamin })
-  const profesi = [
-    {
-      "kode": "A",
-      "nama_profesi": "Petani"
-    },
-    {
-      "kode": "B",
-      "nama_profesi": "Teknisi"
-    },
-    {
-      "kode": "C",
-      "nama_profesi": "Guru"
-    },
-    {
-      "kode": "D",
-      "nama_profesi": "Nelayan"
-    },
-    {
-      "kode": "E",
-      "nama_profesi": "Seniman"
-    },
+  const seed1 = await prisma.post.createMany({ data: postsData })
 
-  ]
-  const seed2 = await prisma.profesi.createMany({data:profesi})
 }
 main()
   .then(async () => {

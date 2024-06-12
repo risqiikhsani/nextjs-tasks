@@ -10,32 +10,9 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
-
-model HasilResponse {
-  id                 Int           @id @default(autoincrement())
-  jenis_kelamin      JenisKelamin? @relation(fields: [jenis_kelamin_kode], references: [kode])
-  jenis_kelamin_kode String?
-  nama               String?
-  nama_jalan         String?
-  email              String?
-  angka_kurang       Int?
-  angka_lebih        Int?
-  profesi            Profesi?      @relation(fields: [profesi_kode], references: [kode])
-  profesi_kode       String?
-  plain_json         String?
-}
-
-model JenisKelamin {
-  id             Int             @id @default(autoincrement())
-  kode           String          @unique
-  jenis_kelamin  String
-  hasil_response HasilResponse[]
-}
-
-model Profesi {
-  id             Int             @id @default(autoincrement())
-  kode           String          @unique
-  nama_profesi   String
-  hasil_response HasilResponse[]
+model Post {
+  id            Int     @id @default(autoincrement())
+  title         String?
+  time_creation String?
+  text          String?
 }
