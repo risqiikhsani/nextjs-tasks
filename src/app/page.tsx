@@ -13,7 +13,7 @@ import UpdatePost from './_posts/update-post';
 import DeletePost from './_posts/delete-post';
 
 export default async function Page() {
-  const response = await fetch(`${process.env.URL}/api/posts`, { cache: 'no-store' });
+  const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/posts`, { cache: 'no-store' });
   const dynamicData = await response.json();
 
   return (
