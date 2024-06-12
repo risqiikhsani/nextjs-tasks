@@ -6,9 +6,10 @@ jalankan di [vercel]([http://localhost:3000/](https://pretest1-6jx532x2g-risqiik
 
 
 Sebelum menjalankan di local
+atur DATABASE_URL & NEXT_PUBLIC_URL di .env
 
 ```bash
-set DATABASE_URL & NEXT_PUBLIC_URL di .env
+
 npm install
 npx prisma migrate dev --name init
 npx prisma migrate reset
