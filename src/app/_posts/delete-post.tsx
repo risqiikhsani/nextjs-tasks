@@ -10,6 +10,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
+import { toast } from 'sonner';
 import { useRouter } from 'next/navigation'
 
 export default function DeletePost({post_id}:{post_id:string}) {
@@ -25,6 +26,7 @@ export default function DeletePost({post_id}:{post_id:string}) {
         if(response.ok){
             console.log("Post updated successfully");
             router.refresh()
+            toast.success('Deleted successfully');
         }
         else{
             console.log("Error updating post");

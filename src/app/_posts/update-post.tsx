@@ -23,6 +23,9 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner';
+
+
 const formSchema = z.object({
     title: z.string().min(2).max(50),
     text: z.string().min(2).max(50),
@@ -58,6 +61,7 @@ export default function UpdatePost({data}:{data:any}) {
             console.log("Post updated successfully");
             form.reset();
             router.refresh()
+            toast.success('Updated successfully');
         }
         else{
             console.log("Error updating post");

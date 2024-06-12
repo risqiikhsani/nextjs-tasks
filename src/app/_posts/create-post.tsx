@@ -21,6 +21,7 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form"
+import { toast } from 'sonner';
 import { Input } from "@/components/ui/input"
 import { useRouter } from 'next/navigation'
 const formSchema = z.object({
@@ -58,7 +59,7 @@ export default function CreatePost() {
             console.log("Post created successfully");
             form.reset();
             router.refresh()
-            
+            toast.success('Created Successfully');
         }
         else{
             console.log("Error creating post");
