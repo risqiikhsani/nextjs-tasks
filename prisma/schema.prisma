@@ -11,8 +11,8 @@ datasource db {
 }
 
 model Post {
-  id            Int     @id @default(autoincrement())
+  id            Int      @id @default(autoincrement())
   title         String?
-  time_creation String?
+  time_creation DateTime @default(now())
   text          String?
 }
