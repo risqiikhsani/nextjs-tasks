@@ -45,11 +45,7 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
     const { id } = params;
     const body = await request.json();
-    const { title, text } = body;
-
-    if (!title || !text) {
-        return new Response("Please provide both title and text", { status: 400 });
-    }
+    const { title, content } = body;
 
     try {
         const updatedPost = await prisma.post.update({
@@ -58,7 +54,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
             },
             data: {
                 title,
-                text,
+                content
             },
         });
 

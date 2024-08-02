@@ -9,6 +9,9 @@ const fontSans = FontSans({
 })
 import "./globals.css";
 import { Toaster, toast } from 'sonner'
+import SessionWrapper from "@/components/session-provider";
+import CheckAuth from "@/components/check-auth";
+import Appbar from "@/components/appbar";
 
 
 export const metadata: Metadata = {
@@ -30,10 +33,26 @@ export default function RootLayout({
           fontSans.variable
         )}
       >
-        <Toaster richColors={true}/>
-        <div className="container py-10">
-          {children}
-        </div>
+
+        <SessionWrapper>
+          <CheckAuth>
+
+
+            <Toaster richColors={true} />
+            <div className="flex-col">
+              <Appbar />
+              <div className="flex md:container">
+                <div className="pt-24 flex-1 md:mx-64 pb-8 md:px-8 min-h-screen">
+                  {children}
+                </div>
+              </div>
+
+
+            </div>
+
+
+          </CheckAuth>
+        </SessionWrapper>
 
       </body>
     </html>

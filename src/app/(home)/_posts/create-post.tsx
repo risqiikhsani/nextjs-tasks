@@ -26,7 +26,7 @@ import { Input } from "@/components/ui/input"
 import { useRouter } from 'next/navigation'
 const formSchema = z.object({
     title: z.string().min(2).max(50),
-    text: z.string().min(2).max(50),
+    content: z.string().min(2).max(50),
 })
 
 
@@ -38,7 +38,7 @@ export default function CreatePost() {
         resolver: zodResolver(formSchema),
         defaultValues: {
             title: "",
-            text: ""
+            content: ""
         },
     })
 
@@ -102,15 +102,15 @@ export default function CreatePost() {
                                 />
                                 <FormField
                                     control={form.control}
-                                    name="text"
+                                    name="content"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>text</FormLabel>
+                                            <FormLabel>content</FormLabel>
                                             <FormControl>
-                                                <Input placeholder="text" {...field} />
+                                                <Input placeholder="content" {...field} />
                                             </FormControl>
                                             <FormDescription>
-                                                This is the text of the post
+                                                This is the content of the post
                                             </FormDescription>
                                             <FormMessage />
                                         </FormItem>

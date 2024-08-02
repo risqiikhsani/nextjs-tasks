@@ -17,17 +17,20 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
     const body = await request.json();
-    const { title, text } = body;
+    const { title, content } = body;
 
-    if (!title || !text) {
-        return new Response("Please provide both title and text", { status: 400 });
+    if (!title) {
+        return new Response("Please provide both title", { status: 400 });
     }
+
+    const authorId = 1;
 
     try {
         const newPost = await prisma.post.create({
             data: {
                 title,
-                text,
+                content,
+                author: { connect: { id: authorId } },
             },
         });
 

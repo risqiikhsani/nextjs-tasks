@@ -28,7 +28,7 @@ import { toast } from 'sonner';
 
 const formSchema = z.object({
     title: z.string().min(2).max(50),
-    text: z.string().min(2).max(50),
+    content: z.string().min(2).max(50),
 })
 
 
@@ -40,7 +40,7 @@ export default function UpdatePost({data}:{data:any}) {
         resolver: zodResolver(formSchema),
         defaultValues: {
             title: data.title,
-            text: data.text
+            content: data.content
         },
     })
 
@@ -104,15 +104,15 @@ export default function UpdatePost({data}:{data:any}) {
                                 />
                                 <FormField
                                     control={form.control}
-                                    name="text"
+                                    name="content"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>text</FormLabel>
+                                            <FormLabel>content</FormLabel>
                                             <FormControl>
-                                                <Input placeholder="text" {...field} />
+                                                <Input placeholder="content" {...field} />
                                             </FormControl>
                                             <FormDescription>
-                                                This is the text of the post
+                                                This is the content of the post
                                             </FormDescription>
                                             <FormMessage />
                                         </FormItem>
