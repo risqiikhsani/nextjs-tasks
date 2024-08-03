@@ -8,6 +8,7 @@ const fontSans = FontSans({
   variable: "--font-sans",
 })
 import "./globals.css";
+import "@uploadthing/react/styles.css";
 import { Toaster, toast } from 'sonner'
 import SessionWrapper from "@/components/session-provider";
 import CheckAuth from "@/components/check-auth";

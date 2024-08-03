@@ -17,7 +17,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
     const body = await request.json();
-    const { title, content } = body;
+    const { title, content, image } = body;
 
     if (!title) {
         return new Response("Please provide both title", { status: 400 });
@@ -30,6 +30,7 @@ export async function POST(request: Request) {
             data: {
                 title,
                 content,
+                image,
                 author: { connect: { id: authorId } },
             },
         });

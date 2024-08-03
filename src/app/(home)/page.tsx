@@ -14,6 +14,7 @@ import CreatePost from './_posts/create-post';
 import UpdatePost from './_posts/update-post';
 import DeletePost from './_posts/delete-post';
 import Dashboard from '@/components/dashboard';
+import Image from 'next/image';
 
 const URL = process.env.NEXT_PUBLIC_URL;
 
@@ -45,6 +46,8 @@ export default async function Page() {
             </CardHeader>
             <CardContent>
               <p>{post.content}</p>
+              {post.image && <Image src={post.image} alt="image" width="400" height="400" className='mx-auto'/>}
+              
             </CardContent>
             <CardFooter className='flex gap-2 items-center justify-end'>
               <UpdatePost data={post}/>
