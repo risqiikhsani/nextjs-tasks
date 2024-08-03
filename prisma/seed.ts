@@ -12,6 +12,8 @@ async function main() {
       profile: {
         create: { bio: 'I like turtles' },
       },
+      username:'admin',
+      password:'admin123'
     },
   })
 
@@ -24,6 +26,8 @@ async function main() {
   console.dir(allUsers, { depth: null })
 
 }
+
+
 main()
   .then(async () => {
     await prisma.$disconnect()

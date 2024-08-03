@@ -16,7 +16,7 @@ export async function middleware(request: NextRequest) {
   
   const path = request.nextUrl.pathname;
 
-  const publicPath = [ "/callback","/homepage","/auth/login"];
+  const publicPath = [ "/callback","/homepage","/auth/login","/auth/signup"];
   let isPublicPath = false;
 
   for (const publicPathItem of publicPath) {
