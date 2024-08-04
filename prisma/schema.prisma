@@ -15,12 +15,33 @@ model Post {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  title     String   
+  title     String
   content   String?
   image     String?
   published Boolean  @default(false)
   author    User     @relation(fields: [authorId], references: [id])
   authorId  Int
+}
+
+model Coupon {
+  id            Int             @id @default(autoincrement())
+  name          String
+  description   String?
+  image         String?
+  category      String          @default("all")
+  code          String
+  expiredTime   DateTime?
+  amount        Int             @default(1)
+  ClaimedCoupon ClaimedCoupon[]
+}
+
+model ClaimedCoupon {
+  id        Int      @id @default(autoincrement())
+  claimer   User     @relation(fields: [claimerId], references: [id])
+  claimerId Int
+  createdAt DateTime @default(now())
+  coupon    Coupon   @relation(fields: [couponId], references: [id])
+  couponId  Int
 }
 
 model Profile {
@@ -31,13 +52,14 @@ model Profile {
 }
 
 model User {
-  id       Int      @id @default(autoincrement())
-  email    String   @unique
-  username String   @unique
-  password String
-  name     String?
-  posts    Post[]
-  profile  Profile?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            Int             @id @default(autoincrement())
+  email         String          @unique
+  username      String          @unique
+  password      String
+  name          String?
+  posts         Post[]
+  profile       Profile?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  ClaimedCoupon ClaimedCoupon[]
 }
