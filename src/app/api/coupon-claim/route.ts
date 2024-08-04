@@ -12,13 +12,9 @@ export async function GET(request: Request) {
     }
 
     const result = await prisma.claimedCoupon.findMany({
-        // include: {
-        //     _count: {
-        //         select: {
-        //             hasil_response: true
-        //         }
-        //     }
-        // }
+        include: {
+            coupon: true,
+        }
     })
     return Response.json(result)
 }

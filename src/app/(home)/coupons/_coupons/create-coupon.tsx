@@ -128,7 +128,7 @@ export default function CreateCoupon() {
         
             <Dialog>
                 <DialogTrigger asChild>
-                    <Button>
+                    <Button variant="outline">
                         Create Coupon
                     </Button>
                 </DialogTrigger>

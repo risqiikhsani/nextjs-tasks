@@ -13,10 +13,10 @@ import {
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation'
 
-export default function DeleteCoupon({coupon_id}:{coupon_id:string}) {
+export default function RemoveClaimCoupon({coupon_id}:{coupon_id:string}) {
     const router = useRouter()
     const onSubmit = async () => {
-        const response = await fetch(`/api/coupon/${coupon_id}`, {
+        const response = await fetch(`/api/coupon-claim/${coupon_id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
@@ -24,25 +24,25 @@ export default function DeleteCoupon({coupon_id}:{coupon_id:string}) {
         });
 
         if(response.ok){
-            console.log("coupon updated successfully");
+            console.log("delete successfully");
             router.refresh()
-            toast.success('Deleted successfully');
+            toast.success('delete successfully');
         }
         else{
-            console.log("Error updating coupon");
+            console.log("Error delete coupon");
         }
     }
 
     return (
         <>
             <Dialog>
-                <DialogTrigger asChild><Button variant="destructive">Delete coupon
+                <DialogTrigger asChild><Button>Delete
                     </Button></DialogTrigger>
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle>Delete coupon</DialogTitle>
                         <DialogDescription>
-                            Are you sure to delete coupon?
+                            Are you sure to Delete coupon that you claimed ?
                         </DialogDescription>
                         <DialogClose asChild>
                         <Button onClick={onSubmit}>

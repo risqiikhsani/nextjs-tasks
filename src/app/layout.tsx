@@ -42,7 +42,7 @@ export default function RootLayout({
             <Toaster richColors={true} />
             <div className="flex-col">
               <Appbar />
-              <div className="flex md:container">
+              <div className="flex">
                 <div className="pt-24 flex-1 md:mx-64 pb-8 md:px-8 min-h-screen">
                   {children}
                 </div>

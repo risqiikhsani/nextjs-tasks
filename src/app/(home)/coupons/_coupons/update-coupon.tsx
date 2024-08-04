@@ -125,7 +125,7 @@ export default function UpdateCoupon({data}:{data:any}) {
         
             <Dialog>
                 <DialogTrigger asChild>
-                    <Button>
+                    <Button variant="secondary">
                         Update Coupon
                     </Button>
                 </DialogTrigger>
