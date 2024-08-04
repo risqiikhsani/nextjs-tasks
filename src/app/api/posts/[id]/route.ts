@@ -45,7 +45,7 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
     const { id } = params;
     const body = await request.json();
-    const { title, content } = body;
+    const { name, detail, image, price, category } = body;
 
     try {
         const updatedPost = await prisma.post.update({
@@ -53,8 +53,11 @@ export async function PUT(request: Request, { params }: { params: { id: string }
                 id: parseInt(id),
             },
             data: {
-                title,
-                content
+                name: name, 
+                detail: detail, 
+                image: image, 
+                price: price, 
+                category: category
             },
         });
 

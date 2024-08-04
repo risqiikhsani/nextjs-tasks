@@ -7,7 +7,11 @@ async function main() {
       name: 'Alice',
       email: 'alice@prisma.io',
       posts: {
-        create: { title: 'Hello World' },
+        create: { 
+          name: 'Computer',
+          price: 1000000,
+          category: "electronics"
+        },
       },
       profile: {
         create: { bio: 'I like turtles' },

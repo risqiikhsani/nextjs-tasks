@@ -24,23 +24,44 @@ import {
 import { Input } from "@/components/ui/input"
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner';
-
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
+import { Textarea } from "@/components/ui/textarea"
+import { categories } from "@/constants/categories"
+import { UploadButton } from "@/utils/uploadthing"
+import { useState } from "react"
+import Image from "next/image"
 
 const formSchema = z.object({
-    title: z.string().min(2).max(50),
-    content: z.string().min(2).max(50),
+    name: z.string().min(2).max(50),
+    detail: z.string().min(2).max(50),
+    price: z.coerce.number(),
+    category: z.string().min(2).max(50),
 })
 
 
 
-export default function UpdatePost({data}:{data:any}) {
+export default function UpdatePost({ data }: { data: any }) {
     const router = useRouter()
+    const [imageUrl, setImageUrl] = useState(data.image)
     // 1. Define your form.
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            title: data.title,
-            content: data.content
+            name: data.name,
+            detail: data.detail,
+            price: data.price,
+            category: data.category
         },
     })
 
@@ -57,18 +78,18 @@ export default function UpdatePost({data}:{data:any}) {
             body: JSON.stringify(values)
         });
 
-        if(response.ok){
+        if (response.ok) {
             console.log("Post updated successfully");
             form.reset();
             router.refresh()
             toast.success('Updated successfully');
         }
-        else{
+        else {
             console.log("Error updating post");
             form.reset();
         }
     }
-    
+
 
     return (
         <>
@@ -88,40 +109,102 @@ export default function UpdatePost({data}:{data:any}) {
                             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                                 <FormField
                                     control={form.control}
-                                    name="title"
+                                    name="name"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>title</FormLabel>
+                                            <FormLabel>name</FormLabel>
                                             <FormControl>
                                                 <Input placeholder="title" {...field} />
                                             </FormControl>
-                                            <FormDescription>
-                                                This is the title of the post
-                                            </FormDescription>
                                             <FormMessage />
                                         </FormItem>
                                     )}
                                 />
                                 <FormField
                                     control={form.control}
-                                    name="content"
+                                    name="detail"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>content</FormLabel>
+                                            <FormLabel>detail</FormLabel>
                                             <FormControl>
-                                                <Input placeholder="content" {...field} />
+                                                <Textarea
+                                                    placeholder="Description"
+                                                    className="resize-none"
+                                                    {...field}
+                                                />
                                             </FormControl>
-                                            <FormDescription>
-                                                This is the content of the post
-                                            </FormDescription>
                                             <FormMessage />
                                         </FormItem>
                                     )}
                                 />
+                                <FormField
+                                    control={form.control}
+                                    name="price"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>price</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="detail" {...field} type="number" />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="category"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>category</FormLabel>
+                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                <FormControl>
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Select a category" />
+                                                    </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                    {categories.map((a, i) =>
+                                                        <SelectItem key={i} value={a}>{a}</SelectItem>
+                                                    )}
+                                                </SelectContent>
+                                            </Select>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <UploadButton
+                                    endpoint="imageUploader"
+                                    onClientUploadComplete={(res) => {
+                                        // Do something with the response
+                                        console.log("Files: ", res);
+                                        setImageUrl(res[0].url);
+                                        toast.info("Upload Completed");
+                                    }}
+                                    onUploadError={(error: Error) => {
+                                        // Do something with the error.
+                                        toast.info(`ERROR! ${error.message}`);
+                                    }}
+                                    content={{
+                                        button({ ready }) {
+                                            if (ready) return <div>Upload Image</div>;
+
+                                            return "Getting ready...";
+                                        },
+                                        allowedContent({ ready, fileTypes, isUploading }) {
+                                            if (!ready) return "Checking what you allow";
+                                            if (isUploading) return "Seems like Image is uploading";
+                                            return `Image you can upload: ${fileTypes.join(", ")}`;
+                                        },
+                                    }}
+                                />
+
+                                {imageUrl && <Image src={imageUrl} alt="image" width="200" height="200" />}
+
+
                                 <DialogClose asChild>
-                                <Button type="submit">Submit</Button>
+                                    <Button type="submit">Submit</Button>
                                 </DialogClose>
-                                
+
                             </form>
                         </Form>
                     </DialogHeader>

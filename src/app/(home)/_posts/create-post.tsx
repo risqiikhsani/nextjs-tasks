@@ -13,6 +13,18 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { set, useForm } from "react-hook-form"
 import { z } from "zod"
 import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
+import {
     Form,
     FormControl,
     FormDescription,
@@ -27,22 +39,28 @@ import { useRouter } from 'next/navigation'
 import { UploadButton } from "@/utils/uploadthing"
 import { useState } from "react"
 import Image from "next/image"
+import { categories } from "@/constants/categories"
+import { Textarea } from "@/components/ui/textarea"
 const formSchema = z.object({
-    title: z.string().min(2).max(50),
-    content: z.string().min(2).max(50),
+    name: z.string().min(2).max(50),
+    detail: z.string().min(2).max(50),
+    price: z.coerce.number(),
+    category: z.string().min(2).max(50),
 })
 
 
 
 export default function CreatePost() {
     const router = useRouter()
-    const [imageUrl,setImageUrl] = useState("")
+    const [imageUrl, setImageUrl] = useState("")
     // 1. Define your form.
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            title: "",
-            content: ""
+            name: "",
+            detail: "",
+            price: 0,
+            category: ""
         },
     })
 
@@ -52,7 +70,8 @@ export default function CreatePost() {
         // ✅ This will be type-safe and validated.
         const newValues = {
             ...values,
-            image: imageUrl}
+            image: imageUrl
+        }
 
         console.log(newValues)
         const response = await fetch(`/api/posts`, {
@@ -96,32 +115,65 @@ export default function CreatePost() {
                             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                                 <FormField
                                     control={form.control}
-                                    name="title"
+                                    name="name"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>title</FormLabel>
+                                            <FormLabel>name</FormLabel>
                                             <FormControl>
                                                 <Input placeholder="title" {...field} />
                                             </FormControl>
-                                            <FormDescription>
-                                                This is the title of the post
-                                            </FormDescription>
                                             <FormMessage />
                                         </FormItem>
                                     )}
                                 />
                                 <FormField
                                     control={form.control}
-                                    name="content"
+                                    name="detail"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>content</FormLabel>
+                                            <FormLabel>detail</FormLabel>
                                             <FormControl>
-                                                <Input placeholder="content" {...field} />
+                                                <Textarea
+                                                    placeholder="Description"
+                                                    className="resize-none"
+                                                    {...field}
+                                                />
                                             </FormControl>
-                                            <FormDescription>
-                                                This is the content of the post
-                                            </FormDescription>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="price"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>price</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="detail" {...field} type="number" />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="category"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>category</FormLabel>
+                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                <FormControl>
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Select a category" />
+                                                    </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                    {categories.map((a, i) =>
+                                                        <SelectItem key={i} value={a}>{a}</SelectItem>
+                                                    )}
+                                                </SelectContent>
+                                            </Select>
                                             <FormMessage />
                                         </FormItem>
                                     )}
@@ -140,19 +192,19 @@ export default function CreatePost() {
                                     }}
                                     content={{
                                         button({ ready }) {
-                                          if (ready) return <div>Upload Image</div>;
-                                     
-                                          return "Getting ready...";
+                                            if (ready) return <div>Upload Image</div>;
+
+                                            return "Getting ready...";
                                         },
                                         allowedContent({ ready, fileTypes, isUploading }) {
-                                          if (!ready) return "Checking what you allow";
-                                          if (isUploading) return "Seems like Image is uploading";
-                                          return `Image you can upload: ${fileTypes.join(", ")}`;
+                                            if (!ready) return "Checking what you allow";
+                                            if (isUploading) return "Seems like Image is uploading";
+                                            return `Image you can upload: ${fileTypes.join(", ")}`;
                                         },
-                                      }}
+                                    }}
                                 />
-                                {imageUrl && <Image src={imageUrl} alt="image" width="200" height="200"/>}
-                                
+                                {imageUrl && <Image src={imageUrl} alt="image" width="200" height="200" />}
+
                                 <DialogClose asChild>
                                     <Button type="submit">Create</Button>
                                 </DialogClose>
