@@ -44,14 +44,12 @@ import Image from "next/image"
 
 const formSchema = z.object({
     name: z.string().min(2).max(50),
-    detail: z.string().min(2).max(50),
-    price: z.coerce.number(),
-    category: z.string().min(2).max(50),
+    detail: z.string().min(2).max(50)
 })
 
 
 
-export default function UpdatePost({ data }: { data: any }) {
+export default function UpdateTask({ data }: { data: any }) {
     const router = useRouter()
     const [imageUrl, setImageUrl] = useState(data.image)
     // 1. Define your form.
@@ -59,36 +57,36 @@ export default function UpdatePost({ data }: { data: any }) {
         resolver: zodResolver(formSchema),
         defaultValues: {
             name: data.name,
-            detail: data.detail,
-            price: data.price,
-            category: data.category
+            detail: data.detail
         },
     })
 
     // 2. Define a submit handler.
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        // Do something with the form values.
-        // ✅ This will be type-safe and validated.
-        console.log(values)
-        const response = await fetch(`/api/posts/${data.id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(values)
-        });
-
-        if (response.ok) {
-            console.log("Post updated successfully");
-            form.reset();
-            router.refresh()
-            toast.success('Updated successfully');
-        }
-        else {
-            console.log("Error updating post");
-            form.reset();
+        try {
+            const response = await fetch(`/api/tasks/${data.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(values),
+            });
+    
+            if (response.ok) {
+                console.log("Task updated successfully");
+                form.reset();
+                router.refresh();
+                toast.success('Updated successfully');
+            } else {
+                const errorData = await response.json(); // Parse JSON response from backend
+                toast.error(`Error updating task: ${errorData.message}`);
+            }
+        } catch (error) {
+            console.error("Error submitting the form:", error);
+            toast.error(`Failed to update task: ${error instanceof Error ? error.message : 'Unknown error'}`);
         }
     }
+    
 
 
     return (
@@ -96,14 +94,14 @@ export default function UpdatePost({ data }: { data: any }) {
             <Dialog>
                 <DialogTrigger asChild>
                     <Button>
-                        Update Post
+                        Update
                     </Button>
                 </DialogTrigger>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Update Post</DialogTitle>
+                        <DialogTitle>Update Task</DialogTitle>
                         <DialogDescription>
-                            Update post.
+                            Update Task.
                         </DialogDescription>
                         <Form {...form}>
                             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -133,41 +131,6 @@ export default function UpdatePost({ data }: { data: any }) {
                                                     {...field}
                                                 />
                                             </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={form.control}
-                                    name="price"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>price</FormLabel>
-                                            <FormControl>
-                                                <Input placeholder="detail" {...field} type="number" />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={form.control}
-                                    name="category"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>category</FormLabel>
-                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                <FormControl>
-                                                    <SelectTrigger>
-                                                        <SelectValue placeholder="Select a category" />
-                                                    </SelectTrigger>
-                                                </FormControl>
-                                                <SelectContent>
-                                                    {categories.map((a, i) =>
-                                                        <SelectItem key={i} value={a}>{a}</SelectItem>
-                                                    )}
-                                                </SelectContent>
-                                            </Select>
                                             <FormMessage />
                                         </FormItem>
                                     )}

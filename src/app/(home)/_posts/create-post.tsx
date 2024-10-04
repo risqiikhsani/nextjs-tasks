@@ -44,13 +44,11 @@ import { Textarea } from "@/components/ui/textarea"
 const formSchema = z.object({
     name: z.string().min(2).max(50),
     detail: z.string().min(2).max(50),
-    price: z.coerce.number(),
-    category: z.string().min(2).max(50),
 })
 
 
 
-export default function CreatePost() {
+export default function CreateTask() {
     const router = useRouter()
     const [imageUrl, setImageUrl] = useState("")
     // 1. Define your form.
@@ -58,9 +56,7 @@ export default function CreatePost() {
         resolver: zodResolver(formSchema),
         defaultValues: {
             name: "",
-            detail: "",
-            price: 0,
-            category: ""
+            detail: ""
         },
     })
 
@@ -74,26 +70,35 @@ export default function CreatePost() {
         }
 
         console.log(newValues)
-        const response = await fetch(`/api/posts`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(newValues)
-        });
 
-        if (response.ok) {
-            console.log("Post created successfully");
-            form.reset();
-            setImageUrl("");
-            router.refresh()
-            toast.success('Created Successfully');
+        try {
+            const response = await fetch(`/api/tasks`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newValues)
+            });
+    
+            if (response.ok) {
+                console.log("Task created successfully");
+                form.reset();
+                setImageUrl("");
+                router.refresh()
+                toast.success('Created Successfully');
+            }
+            else {
+                const errorData = await response.json()
+                console.log("Error creating Task");
+                form.reset();
+                toast.error(`Error updating task: ${errorData.message || 'Unknown error'}`)
+                setImageUrl("");
+            }    
+        } catch (error) {
+            console.error("Error submitting the form:", error)
+            toast.error(`Failed to create task: ${error instanceof Error ? error.message : 'Unknown error'}`)
         }
-        else {
-            console.log("Error creating post");
-            form.reset();
-            setImageUrl("");
-        }
+        
     }
 
 
@@ -102,14 +107,14 @@ export default function CreatePost() {
             <Dialog>
                 <DialogTrigger asChild>
                     <Button>
-                        Create Post
+                        Create Task
                     </Button>
                 </DialogTrigger>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Create Post</DialogTitle>
+                        <DialogTitle>Create Task</DialogTitle>
                         <DialogDescription>
-                            Create a new post.
+                            Create a new Task.
                         </DialogDescription>
                         <Form {...form}>
                             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -139,41 +144,6 @@ export default function CreatePost() {
                                                     {...field}
                                                 />
                                             </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={form.control}
-                                    name="price"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>price</FormLabel>
-                                            <FormControl>
-                                                <Input placeholder="detail" {...field} type="number" />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={form.control}
-                                    name="category"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>category</FormLabel>
-                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                <FormControl>
-                                                    <SelectTrigger>
-                                                        <SelectValue placeholder="Select a category" />
-                                                    </SelectTrigger>
-                                                </FormControl>
-                                                <SelectContent>
-                                                    {categories.map((a, i) =>
-                                                        <SelectItem key={i} value={a}>{a}</SelectItem>
-                                                    )}
-                                                </SelectContent>
-                                            </Select>
                                             <FormMessage />
                                         </FormItem>
                                     )}

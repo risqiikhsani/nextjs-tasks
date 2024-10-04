@@ -39,7 +39,10 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
+        const isPasswordValid = await bcrypt.compare(
+          credentials.password,
+          user.password
+        );
 
         if (!isPasswordValid) {
           return null;
@@ -89,11 +92,25 @@ export const authOptions: NextAuthOptions = {
       }
       return true;
     },
-    jwt: async ({ user, token, trigger, session }) => {
-      if (trigger === "update") {
-        return { ...token, ...session.user };
+    // jwt: async ({ user, token, trigger, session }) => {
+    //   if (trigger === "update") {
+    //     return { ...token, ...session.user };
+    //   }
+    //   return { ...token, ...user };
+    // },
+    jwt({ token, account, user }) {
+      if (account) {
+        token.accessToken = account.access_token;
+        token.id = user?.id;
       }
-      return { ...token, ...user };
+      return token;
+    },
+    session({ session, token }) {
+      // I skipped the line below coz it gave me a TypeError
+      // session.accessToken = token.accessToken;
+      session.user.id = token.id;
+
+      return session;
     },
   },
 };

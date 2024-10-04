@@ -18,6 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const formSchema = z
     .object({
@@ -64,6 +65,8 @@ const formSchema = z
     });
 
 const Page = () => {
+    const router = useRouter();
+    
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -94,6 +97,7 @@ const Page = () => {
             const data = await response.json();
             toast.success("Account created!");
             form.reset();
+            router.push("/auth/login")
         } catch (error) {
             if (error instanceof Error) {
                 toast.error(error.message);

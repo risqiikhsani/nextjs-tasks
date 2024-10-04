@@ -6,15 +6,11 @@ async function main() {
     data: {
       name: 'Alice',
       email: 'alice@prisma.io',
-      posts: {
+      tasks: {
         create: { 
-          name: 'Computer',
-          price: 1000000,
-          category: "electronics"
+          name: 'Test task',
+          detail:"Test detail task"
         },
-      },
-      profile: {
-        create: { bio: 'I like turtles' },
       },
       username:'admin',
       password:'admin123'
@@ -23,8 +19,7 @@ async function main() {
 
   const allUsers = await prisma.user.findMany({
     include: {
-      posts: true,
-      profile: true,
+      tasks: true,
     },
   })
   console.dir(allUsers, { depth: null })

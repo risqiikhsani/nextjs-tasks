@@ -11,46 +11,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Post {
+model Task {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   name      String
   detail    String?
   image     String?
-  price     Int      @default(0)
-  category  String
-  published Boolean  @default(false)
   author    User     @relation(fields: [authorId], references: [id])
   authorId  Int
-}
-
-model Coupon {
-  id            Int             @id @default(autoincrement())
-  name          String
-  description   String?
-  image         String?
-  category      String          @default("all")
-  code          String
-  expiredTime   DateTime?
-  amount        Int             @default(1)
-  ClaimedCoupon ClaimedCoupon[]
-}
-
-model ClaimedCoupon {
-  id        Int      @id @default(autoincrement())
-  claimer   User     @relation(fields: [claimerId], references: [id])
-  claimerId Int
-  createdAt DateTime @default(now())
-  coupon    Coupon   @relation(fields: [couponId], references: [id])
-  couponId  Int
-}
-
-model Profile {
-  id     Int     @id @default(autoincrement())
-  bio    String?
-  user   User    @relation(fields: [userId], references: [id])
-  userId Int     @unique
 }
 
 model User {
@@ -59,9 +28,7 @@ model User {
   username      String          @unique
   password      String
   name          String?
-  posts         Post[]
-  profile       Profile?
+  tasks         Task[]
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
-  ClaimedCoupon ClaimedCoupon[]
 }

@@ -95,12 +95,12 @@ const Page = () => {
             </Form>
             <div className="flex flex-col gap-2 mt-2 text-center">
                 <p>or login with OAuth</p>
-                <Button onClick={() => signIn("google", { callbackUrl: `${URL}` })}>Login Google</Button>
-                <Button onClick={() => signIn("github", { callbackUrl: `${URL}` })}>Login Github</Button>
+                <Button onClick={() => signIn("google", { callbackUrl: `${URL}` })} disabled>Login Google</Button>
+                <Button onClick={() => signIn("github", { callbackUrl: `${URL}` })} disabled>Login Github</Button>
             </div>
             <Button variant="link">
             <Link className="block" href={"/auth/signup"}>
-                Don't have an account ? Sign up
+                Don{'`'}t have an account ? Sign up
             </Link>
             </Button>
             
