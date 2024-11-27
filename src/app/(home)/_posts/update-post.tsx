@@ -47,8 +47,6 @@ const formSchema = z.object({
     detail: z.string().min(2).max(50)
 })
 
-
-
 export default function UpdateTask({ data }: { data: any }) {
     const router = useRouter()
     const [imageUrl, setImageUrl] = useState(data.image)
@@ -59,6 +57,11 @@ export default function UpdateTask({ data }: { data: any }) {
             name: data.name,
             detail: data.detail
         },
+        // Reset form with new data after successful update
+        values: {
+            name: data.name,
+            detail: data.detail
+        }
     })
 
     // 2. Define a submit handler.
@@ -74,9 +77,8 @@ export default function UpdateTask({ data }: { data: any }) {
     
             if (response.ok) {
                 console.log("Task updated successfully");
-                form.reset();
-                router.refresh();
                 toast.success('Updated successfully');
+                router.refresh()
             } else {
                 const errorData = await response.json(); // Parse JSON response from backend
                 toast.error(`Error updating task: ${errorData.message}`);
@@ -85,6 +87,7 @@ export default function UpdateTask({ data }: { data: any }) {
             console.error("Error submitting the form:", error);
             toast.error(`Failed to update task: ${error instanceof Error ? error.message : 'Unknown error'}`);
         }
+
     }
     
 
@@ -102,6 +105,7 @@ export default function UpdateTask({ data }: { data: any }) {
                         <DialogTitle>Update Task</DialogTitle>
                         <DialogDescription>
                             Update Task.
+                            {/* {JSON.stringify(data)} */}
                         </DialogDescription>
                         <Form {...form}>
                             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">

@@ -18,13 +18,8 @@ export async function GET(request: Request) {
                 author: true
             }
         });
-
-        return new Response(JSON.stringify(result), {
-            status: 200,
-            headers: {
-                "Content-Type": "application/json"
-            }
-        });
+        console.log(result)
+        return Response.json(result)
     } catch (error) {
         console.error("Error fetching tasks:", error);
         return jsonResponse(500, "Error fetching tasks", "Internal Server Error");
@@ -68,12 +63,7 @@ export async function POST(request: Request) {
             },
         });
 
-        return new Response(JSON.stringify(new_task), {
-            status: 201,
-            headers: {
-                "Content-Type": "application/json"
-            }
-        });
+        return Response.json(new_task);
     } catch (error) {
         console.error("Error creating task:", error);
         return jsonResponse(500, "Error creating task", "Internal Server Error");

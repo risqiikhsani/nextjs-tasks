@@ -53,9 +53,11 @@ const Page = () => {
 
         if (!response?.error) {
             router.push("/");
+            toast.success("You are now signed in!");
         }
-
-        toast.success("You are now signed in!");
+        else{
+            toast.error("Wrong credentials or something wrong.")
+        }
     }
 
     return (

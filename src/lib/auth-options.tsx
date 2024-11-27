@@ -27,27 +27,33 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
+        // if nore credentials given, return null
         if (!credentials?.username || !credentials?.password) {
           return null;
         }
-
+        
+        // find user in db
         const user = await prisma.user.findUnique({
           where: { username: credentials.username },
         });
 
+        // if no user, return null
         if (!user) {
           return null;
         }
 
+        // check the password
         const isPasswordValid = await bcrypt.compare(
           credentials.password,
           user.password
         );
 
+        // if password wrong, return null
         if (!isPasswordValid) {
           return null;
         }
 
+        // return data
         return {
           id: user.id.toString(),
           email: user.email,
@@ -57,6 +63,8 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
+  // secret: process.env.SECRET,
+  debug: process.env.NODE_ENV === "development",
   callbacks: {
     async signIn({ user, account, profile }) {
       if (account?.provider === "github" || account?.provider === "google") {
@@ -65,9 +73,9 @@ export const authOptions: NextAuthOptions = {
           const existingUser = await prisma.user.findUnique({
             where: { email: email as string },
           });
-
+          // if there is no user in db
           if (!existingUser) {
-            // Create a new user if they don't exist
+            // Create a new user
             await prisma.user.create({
               data: {
                 email: email as string,
@@ -92,12 +100,7 @@ export const authOptions: NextAuthOptions = {
       }
       return true;
     },
-    // jwt: async ({ user, token, trigger, session }) => {
-    //   if (trigger === "update") {
-    //     return { ...token, ...session.user };
-    //   }
-    //   return { ...token, ...user };
-    // },
+
     jwt({ token, account, user }) {
       if (account) {
         token.accessToken = account.access_token;
