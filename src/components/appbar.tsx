@@ -2,7 +2,6 @@
 import { signOut, useSession } from "next-auth/react";
 import { Button } from "./ui/button";
 import Link from "next/link";
-import SheetLeftBar from "./sheet-left-bar";
 
 export default function Appbar() {
     const { data: session } = useSession();
@@ -10,21 +9,22 @@ export default function Appbar() {
     
     return (
         <>
-            <div className="flex items-center justify-between p-4 fixed w-full top-0 start-0 z-40 bg-gradient-to-r from-blue-200 to-blue-300 dark:bg-gradient-to-r dark:from-slate-700 dark:to-slate-900 shadow-xl">
+            <div className="p-4 fixed w-full top-0 start-0 z-50 shadow-xl  opacity-100">
             {session ? (
-                <>
-                    <SheetLeftBar/>
+                <div className="flex items-center">
                     <h1>Welcome back, {session?.user?.name}</h1>
+                    <span className="flex-1"></span>
                     <Button onClick={() => signOut()}>Logout</Button>
-                </>
+                </div>
 
             ) : (
-                <>
+                <div className="flex items-center">
                     <h1>Welcome</h1>
+                    <span className="flex-1"></span>
                     <Button>
                         <Link href="/auth/login" >Login</Link>
                     </Button>
-                </>
+                </div>
 
             )}
             </div>

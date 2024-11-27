@@ -1,0 +1,3 @@
+pnpm prisma migrate dev
+pnpm prisma db push
+pnpm run dev
