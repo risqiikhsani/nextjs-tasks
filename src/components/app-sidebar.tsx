@@ -1,5 +1,5 @@
-import * as React from "react"
-import { GalleryVerticalEnd } from "lucide-react"
+import * as React from "react";
+import { GalleryVerticalEnd } from "lucide-react";
 
 import {
   Sidebar,
@@ -13,150 +13,111 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
   SidebarRail,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 
 // This is sample data.
 const data = {
   navMain: [
     {
-      title: "Getting Started",
+      title: "Earth",
       url: "#",
       items: [
         {
-          title: "Installation",
+          title: "Users",
           url: "#",
         },
         {
-          title: "Project Structure",
+          title: "Classes",
+          url: "#",
+        },
+        {
+          title: "My Classes",
+          url: "#",
+        },
+        {
+          title: "Q&A",
           url: "#",
         },
       ],
     },
     {
-      title: "Building Your Application",
+      title: "Main Features",
       url: "#",
       items: [
         {
-          title: "Routing",
+          title: "Schedules",
           url: "#",
         },
         {
-          title: "Data Fetching",
-          url: "#",
-          isActive: true,
-        },
-        {
-          title: "Rendering",
+          title: "Courses",
           url: "#",
         },
         {
-          title: "Caching",
+          title: "Task",
           url: "#",
         },
         {
-          title: "Styling",
+          title: "Submitted Task",
           url: "#",
         },
         {
-          title: "Optimizing",
-          url: "#",
-        },
-        {
-          title: "Configuring",
-          url: "#",
-        },
-        {
-          title: "Testing",
-          url: "#",
-        },
-        {
-          title: "Authentication",
-          url: "#",
-        },
-        {
-          title: "Deploying",
-          url: "#",
-        },
-        {
-          title: "Upgrading",
-          url: "#",
-        },
-        {
-          title: "Examples",
+          title: "Meetings",
           url: "#",
         },
       ],
     },
     {
-      title: "API Reference",
+      title: "Private",
       url: "#",
       items: [
         {
-          title: "Components",
+          title: "Notes",
           url: "#",
         },
         {
-          title: "File Conventions",
-          url: "#",
-        },
-        {
-          title: "Functions",
-          url: "#",
-        },
-        {
-          title: "next.config.js Options",
-          url: "#",
-        },
-        {
-          title: "CLI",
-          url: "#",
-        },
-        {
-          title: "Edge Runtime",
+          title: "Bookmarks",
           url: "#",
         },
       ],
     },
     {
-      title: "Architecture",
+      title: "Admin Features",
       url: "#",
       items: [
         {
-          title: "Accessibility",
+          title: "News",
           url: "#",
         },
         {
-          title: "Fast Refresh",
-          url: "#",
-        },
-        {
-          title: "Next.js Compiler",
-          url: "#",
-        },
-        {
-          title: "Supported Browsers",
-          url: "#",
-        },
-        {
-          title: "Turbopack",
+          title: "Analytics",
           url: "#",
         },
       ],
     },
     {
-      title: "Community",
+      title: "AI tools",
       url: "#",
       items: [
         {
-          title: "Contribution Guide",
+          title: "ChatBot",
+          url: "#",
+        },
+        {
+          title: "Summarization",
+          url: "#",
+        },
+        {
+          title: "Translation",
           url: "#",
         },
       ],
     },
   ],
-}
+};
 
-export default function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export default function AppSidebar({
+  ...props
+}: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar {...props}>
       <SidebarHeader>
@@ -168,8 +129,8 @@ export default function AppSidebar({ ...props }: React.ComponentProps<typeof Sid
                   <GalleryVerticalEnd className="size-4" />
                 </div>
                 <div className="flex flex-col gap-0.5 leading-none">
-                  <span className="font-semibold">Documentation</span>
-                  <span className="">v1.0.0</span>
+                  <span className="font-semibold">Version</span>
+                  <span className="">v1.0.0 BETA</span>
                 </div>
               </a>
             </SidebarMenuButton>
@@ -190,7 +151,7 @@ export default function AppSidebar({ ...props }: React.ComponentProps<typeof Sid
                   <SidebarMenuSub>
                     {item.items.map((item) => (
                       <SidebarMenuSubItem key={item.title}>
-                        <SidebarMenuSubButton asChild isActive={item.isActive}>
+                        <SidebarMenuSubButton asChild>
                           <a href={item.url}>{item.title}</a>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
@@ -204,5 +165,5 @@ export default function AppSidebar({ ...props }: React.ComponentProps<typeof Sid
       </SidebarContent>
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }
