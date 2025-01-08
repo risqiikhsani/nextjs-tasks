@@ -1,71 +1,72 @@
-import { authOptions } from "@/lib/auth-options";
-import prisma from "@/lib/prisma";
-import { getServerSession } from "next-auth/next";
+import { auth } from "@/auth"
+import { createErrorResponse } from "@/lib/actions"
+import prisma from "@/lib/prisma"
+import { NextRequest } from "next/server"
 
-function jsonResponse(status: number, message: string, error?: string) {
-    return new Response(JSON.stringify({ status, message, error }), {
-        status,
-        headers: { "Content-Type": "application/json" }
-    });
-}
+export async function GET(req: NextRequest){
+    console.log("== Running Get Tasks ==")
 
-export async function GET(request: Request) {
+    const searchParams = req.nextUrl.searchParams
+    const course_id = searchParams.get('course_id')
 
-
-    try {
-        const result = await prisma.task.findMany({
-            include: {
-                author: true
-            }
-        });
-        console.log(result)
-        return Response.json(result)
-    } catch (error) {
-        console.error("Error fetching tasks:", error);
-        return jsonResponse(500, "Error fetching tasks", "Internal Server Error");
-    }
-}
-
-export async function POST(request: Request) {
-
-    // this session only detected if post was sent from client side page
-    const session = await getServerSession(authOptions);
-    console.log("Session name:", session?.user.name);
-
-    if (!session || !session.user) {
-        return jsonResponse(401, "Unauthorized");
+    if(!course_id){
+        return createErrorResponse('Course ID not found')
     }
 
+    const response = await prisma.task.findMany({
+        where:{
+            courseId: parseInt(course_id)
+        }
+    })
+
+    return Response.json(response)
+}
+
+export async function POST(req:NextRequest){
+    console.log("== Running Post Task ==")
+
+    const searchParams = req.nextUrl.searchParams
+    const course_id = searchParams.get('course_id')
+
+    if(!course_id){
+        return createErrorResponse('Course ID not found')
+    }
+
+    const session = await auth()
+    if(!session){
+        return createErrorResponse('Not Authenticated')
+    }
     const user = await prisma.user.findUnique({
-        where: { email: session.user.email as string },
-    });
+        where:{
+            email:session.user.email
+        }
+    })
 
-    if (!user) {
-        return jsonResponse(404, "User not found");
+    if(!user){
+        return createErrorResponse('User not found')
     }
 
-    const body = await request.json();
-    const { name, detail, image } = body;
+    const formData = await req.formData()
+    const name = formData.get("name")?.toString()
+    const description = formData.get("description")?.toString()
 
-    if (!name) {
-        return jsonResponse(400, "Please provide a name");
+    if(!name || !description){
+        return Response.json("")
     }
-
-    const authorId = user.id;
 
     try {
-        const new_task = await prisma.task.create({
-            data: {
-                name,
-                detail,
-                image,
-                author: { connect: { id: authorId } },
-            },
-        });
-
-        return Response.json(new_task);
+        await prisma.task.create({
+            data:{
+                name:name,
+                description:description,
+                creatorId:user.id,
+                courseId: parseInt(course_id)
+            }
+        })
+    
+        return Response.json("Created")
     } catch (error) {
-        console.error("Error creating task:", error);
-        return jsonResponse(500, "Error creating task", "Internal Server Error");
+        console.log("Error post task: ", error)
+        console.error(error)
     }
 }

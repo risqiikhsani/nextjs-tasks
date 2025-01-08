@@ -12,7 +12,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
 
     try {
         const user = await prisma.user.findUnique({
-            where: { id: parseInt(id) },
+            where: { id: id},
         });
 
         if (!user) {

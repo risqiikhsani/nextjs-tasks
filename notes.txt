@@ -1,0 +1,3 @@
+get Typescript Type Safe from generated prisma models that has "include" relations
+
+https://www.prisma.io/docs/orm/prisma-client/type-safety/operating-against-partial-structures-of-model-types#problem-using-variations-of-the-generated-model-type

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { GalleryVerticalEnd } from "lucide-react";
+import { FolderIcon, GalleryVerticalEnd } from "lucide-react";
 
 import {
   Sidebar,
@@ -14,29 +14,32 @@ import {
   SidebarMenuSubItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import Link from "next/link";
 
 // This is sample data.
 const data = {
   navMain: [
     {
+      title: "Dashboard",
+      url: "/",
+      items: [],
+    },
+    {
       title: "Earth",
       url: "#",
       items: [
         {
-          title: "Users",
-          url: "#",
-        },
-        {
           title: "Classes",
-          url: "#",
+          url: "/classes",
         },
         {
-          title: "My Classes",
-          url: "#",
+          title: "Users",
+          url: "/users",
         },
+
         {
           title: "Q&A",
-          url: "#",
+          url: "/qna",
         },
       ],
     },
@@ -46,23 +49,23 @@ const data = {
       items: [
         {
           title: "Schedules",
-          url: "#",
+          url: "/schedules",
         },
         {
-          title: "Courses",
-          url: "#",
+          title: "My Classes",
+          url: "/classes",
         },
         {
-          title: "Task",
-          url: "#",
+          title: "My Courses",
+          url: "/courses",
         },
         {
-          title: "Submitted Task",
-          url: "#",
+          title: "My Tasks",
+          url: "/tasks",
         },
         {
-          title: "Meetings",
-          url: "#",
+          title: "My Submitted Tasks",
+          url: "/tasks",
         },
       ],
     },
@@ -72,11 +75,7 @@ const data = {
       items: [
         {
           title: "Notes",
-          url: "#",
-        },
-        {
-          title: "Bookmarks",
-          url: "#",
+          url: "/notes",
         },
       ],
     },
@@ -86,11 +85,11 @@ const data = {
       items: [
         {
           title: "News",
-          url: "#",
+          url: "/news",
         },
         {
           title: "Analytics",
-          url: "#",
+          url: "/analytics",
         },
       ],
     },
@@ -100,15 +99,15 @@ const data = {
       items: [
         {
           title: "ChatBot",
-          url: "#",
+          url: "/chatbot",
         },
         {
           title: "Summarization",
-          url: "#",
+          url: "/summarize",
         },
         {
           title: "Translation",
-          url: "#",
+          url: "/translate",
         },
       ],
     },
@@ -143,16 +142,19 @@ export default function AppSidebar({
             {data.navMain.map((item) => (
               <SidebarMenuItem key={item.title}>
                 <SidebarMenuButton asChild>
-                  <a href={item.url} className="font-medium">
+                  <Link href={item.url} className="font-medium">
                     {item.title}
-                  </a>
+                  </Link>
                 </SidebarMenuButton>
                 {item.items?.length ? (
                   <SidebarMenuSub>
                     {item.items.map((item) => (
                       <SidebarMenuSubItem key={item.title}>
                         <SidebarMenuSubButton asChild>
-                          <a href={item.url}>{item.title}</a>
+                          <Link href={item.url}>
+                            <FolderIcon />
+                            {item.title}
+                          </Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                     ))}

@@ -1,51 +1,166 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
-  provider = "prisma-client-js"
-  // output   = "./generated/client"
+  provider        = "prisma-client-js"
   previewFeatures = ["omitApi"]
 }
 
 datasource db {
-  //provider = "sqlite"
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
+// Enum for user roles to enforce role-based access
+enum UserRole {
+  USER
+  MODERATOR
+  ADMIN
+}
 
-
-model Task {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  name      String
-  detail    String?
-  image     String?
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  Int
+enum TaskType {
+  READING
+  MEETING
+  DISCUSSION
+  PRESENTATION
+  SUBMISSION
+  EXAM
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  username  String   @unique
-  password  String
-  name      String?
-  tasks     Task[]
+  id              String   @id @unique @default(uuid())
+  email           String   @unique
+  username        String?  @unique
+  password        String?
+  name            String?
+  role            UserRole @default(USER)
+  profile_picture String?
+
+  // Relationships
+  createdClasses Class[]  @relation("ClassCreator")
+  createdCourses Course[] @relation("CourseCreator")
+  createdTasks   Task[]   @relation("TaskCreator")
+  createdNotes   Note[]   @relation("NoteCreator")
+
+  // Many-to-Many relationships for enrollments
+  enrolledClasses ClassEnrollment[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  role      String?
-  News      News[]
+
+  // for students
+  submittedTasks TaskSubmission[] @relation("TaskSubmitter")
 }
 
-model News {
-  id        Int      @id @default(autoincrement())
+model Note {
+  id    Int     @id @default(autoincrement())
+  title String
+  text  String?
+
+  // Relationship with creator (only Admin can create)
+  creator   User   @relation("NoteCreator", fields: [creatorId], references: [id])
+  creatorId String
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  title     String
-  text      String?
-  image     String?
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  Int
+}
+
+model Class {
+  id          Int     @id @default(autoincrement())
+  name        String
+  description String?
+
+  // Relationship with creator (only Admin can create)
+  creator   User   @relation("ClassCreator", fields: [creatorId], references: [id])
+  creatorId String
+
+  // Courses within this class
+  courses Course[] @relation("ClassCourses")
+
+  // Students enrolled in this class
+  enrollments ClassEnrollment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Course {
+  id          Int     @id @default(autoincrement())
+  name        String
+  description String?
+
+  // Relationship with parent class
+  class   Class @relation("ClassCourses", fields: [classId], references: [id])
+  classId Int
+
+  // Relationship with creator (only Admin can create)
+  creator   User   @relation("CourseCreator", fields: [creatorId], references: [id])
+  creatorId String
+
+  // Tasks within this Course
+  tasks Task[] @relation("CourseTasks")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Task {
+  id          Int     @id @default(autoincrement())
+  name        String
+  description String?
+  detail      String?
+  image       String?
+
+  // Time constraints for task availability
+  availableFrom DateTime? // When the task becomes accessible
+  availableTo   DateTime? // When the task is no longer accessible
+
+  type TaskType?
+
+  // Indicates if the task is currently active/visible
+  isActive Boolean @default(true)
+
+  // Relationship with parent Course
+  course   Course @relation("CourseTasks", fields: [courseId], references: [id])
+  courseId Int
+
+  // Relationship with creator (only Admin can create)
+  creator   User   @relation("TaskCreator", fields: [creatorId], references: [id])
+  creatorId String
+
+  // Optional related submission model (not fully implemented here)
+  submissions TaskSubmission[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Optional model to track student submissions
+model TaskSubmission {
+  id Int @id @default(autoincrement())
+
+  task   Task @relation(fields: [taskId], references: [id])
+  taskId Int
+
+  creator   User   @relation("TaskSubmitter", fields: [creatorId], references: [id])
+  creatorId String
+
+  submissionContent String?
+  submissionFile    String?
+
+  submittedAt  DateTime @default(now())
+  grade        Float?
+  gradeComment String?
+
+  @@unique([taskId, creatorId])
+}
+
+model ClassEnrollment {
+  id         Int      @id @default(autoincrement())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  class      Class    @relation(fields: [classId], references: [id])
+  classId    Int
+  enrolledAt DateTime @default(now())
+
+  @@unique([userId, classId])
 }

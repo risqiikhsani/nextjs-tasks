@@ -1,15 +1,16 @@
-import type { User } from "@prisma/client";
 import React from "react";
 
-const URL = process.env.NEXT_PUBLIC_URL
-
+const URL = process.env.NEXT_PUBLIC_API_URL;
 export default async function page() {
-    const response = await fetch(`${URL}/api/users`, { cache: "no-store" });
-    const dynamicData: User[] = await response.json();
+  let data;
+  try {
+    const response = await fetch(`${URL}/api/users`);
+    data = await response.json();    
+  } catch (error) {
+    console.error(error)
+  }
 
-  return(
-    <div>
-        {dynamicData && JSON.stringify(dynamicData)}
-    </div>
-  )
+  return <div>
+    {data ? JSON.stringify(data) : "Error fetching data."}
+  </div>;
 }

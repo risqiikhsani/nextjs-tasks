@@ -11,7 +11,6 @@ const globalForPrisma = global as unknown as { prisma: PrismaClient }
 export const prisma = globalForPrisma.prisma || new PrismaClient({
     omit:{
         user:{
-            email:true,
             username:true,
             password:true
         }
