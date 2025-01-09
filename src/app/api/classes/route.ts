@@ -7,6 +7,9 @@ export async function GET(){
     const response = await prisma.class.findMany({
         include:{
             creator:true
+        },
+        omit:{
+            password:true
         }
     })
     return Response.json(response)
@@ -32,6 +35,7 @@ export async function POST(req:Request){
     const formData = await req.formData()
     const name = formData.get("name")?.toString()
     const description = formData.get("description")?.toString()
+    const password = formData.get("password")?.toString()
 
     if(!name || !description){
         return Response.json("")
@@ -42,12 +46,15 @@ export async function POST(req:Request){
             data:{
                 name:name,
                 description:description,
+                password:password,
                 creatorId:user.id
             }
         })
     
         return Response.json("Created")
     } catch (error) {
-        console.error(error)
+        if (error instanceof Error) {
+            console.error("Error: ", error.stack);
+          }
     }
 }

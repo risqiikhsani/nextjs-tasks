@@ -17,10 +17,12 @@ import { Loader2 } from "lucide-react";
 
 interface FormSubmitButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   loading: boolean;
+  text?: string;
 }
 
 export default function FormSubmitButton({
   loading,
+  text="Submit",
   className = "",
   ...props
 }: FormSubmitButtonProps) {
@@ -32,7 +34,7 @@ export default function FormSubmitButton({
       {...props}
     >
       {loading && <Loader2 className="animate-spin h-10 w-10 my-2" />}
-      {loading ? "Submitting..." : "Submit"}
+      {loading ? "Loading..." : text}
     </Button>
   );
 }

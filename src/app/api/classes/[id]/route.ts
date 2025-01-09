@@ -36,6 +36,7 @@ export async function PUT(
   const formData = await req.formData();
   const name = formData.get("name");
   const description = formData.get("description");
+  const password = formData.get("password");
 
   if (!name || !description) {
     throw Error;
@@ -51,6 +52,7 @@ export async function PUT(
       data: {
         name: name.toString(),
         description: description.toString(),
+        password: password?.toString() || null,
       },
     });
     return Response.json("Updated");

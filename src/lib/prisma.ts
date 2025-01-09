@@ -13,7 +13,7 @@ export const prisma = globalForPrisma.prisma || new PrismaClient({
         user:{
             username:true,
             password:true
-        }
+        },
     }
 })
 

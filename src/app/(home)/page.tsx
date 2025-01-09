@@ -1,3 +1,4 @@
+import Counter from '@/components/counter'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import Link from 'next/link'
 import React from 'react'
@@ -5,6 +6,7 @@ import React from 'react'
 export default function page() {
   return (
     <div className='grid grid-cols-2 gap-2'>
+      <Counter/>
       <Card>
         <CardHeader>
           <CardTitle>All Users</CardTitle>

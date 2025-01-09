@@ -30,6 +30,7 @@ import * as z from "zod";
 const formSchema = z.object({
   name: z.string(),
   description: z.string(),
+  password: z.string(),
 });
 
 export default function CreateForm() {
@@ -40,15 +41,17 @@ export default function CreateForm() {
     defaultValues: {
       name: "",
       description: "",
+      password: "",
     },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       console.log(values);
-      const formData = new FormData()
-      formData.append("name", values.name)
-      formData.append("description", values.description)
+      const formData = new FormData();
+      formData.append("name", values.name);
+      formData.append("description", values.description);
+      formData.append("password", values.password);
 
       await instance.post("/api/classes", formData);
       form.reset();
@@ -64,9 +67,14 @@ export default function CreateForm() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline"><PlusCircleIcon/>Create New Class</Button>
+        <Button variant="outline">
+          <PlusCircleIcon />
+          Create New Class
+        </Button>
       </DialogTrigger>
-      <DialogContent className={"lg:max-w-screen-lg overflow-y-scroll max-h-screen"}>
+      <DialogContent
+        className={"lg:max-w-screen-lg overflow-y-scroll max-h-screen"}
+      >
         <DialogHeader>
           <DialogTitle>Create new Class</DialogTitle>
         </DialogHeader>
@@ -97,7 +105,22 @@ export default function CreateForm() {
                 <FormItem>
                   <FormLabel>Class Description</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="" {...field}/>
+                    <Textarea placeholder="" {...field} />
+                  </FormControl>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Class Password</FormLabel>
+                  <FormControl>
+                    <Input placeholder="" type="password" {...field} />
                   </FormControl>
 
                   <FormMessage />

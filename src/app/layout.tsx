@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import { Inter as FontSans } from "next/font/google";
-
+import { Toaster } from "@/components/ui/sonner"
 import { cn } from "@/lib/utils";
 import "@uploadthing/react/styles.css";
 import "./globals.css";
 import Appbar from "@/components/appbar";
-
 const fontSans = FontSans({
   subsets: ["latin"],
   variable: "--font-sans",
@@ -30,10 +29,13 @@ export default function RootLayout({
           fontSans.variable
         )}
       >
+ 
         <Appbar />
         <div className="mt-20 container mx-auto max-w-7xl p-4">
         {children}
         </div>
+        <Toaster />
+
       </body>
     </html>
   );

@@ -15,6 +15,7 @@ import DeleteForm from "./delete-form";
 import UpdateForm from "./update-form";
 import { Badge } from "@/components/ui/badge";
 import { ClassWithCreatorType } from "@/types/types";
+import Join from "./join/join";
 
 
 
@@ -44,8 +45,10 @@ export default function ClassCard({
               </p>
             </CardHeader>
             {data.description}
+            {JSON.stringify(data)}
           </CardContent>
           <CardFooter className="flex gap-2 justify-end">
+          <Join class_id={data.id}/>
             {!detail && (
               <Button asChild variant="outline">
                 <Link href={`/classes/${data.id}`}>Detail</Link>
@@ -53,6 +56,7 @@ export default function ClassCard({
             )}
   
             <MenuWrapper>
+              
               <UpdateForm data={data} />
               <DeleteForm data={data} />
             </MenuWrapper>
