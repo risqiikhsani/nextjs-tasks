@@ -18,6 +18,9 @@ export async function GET(
     where: {
       id: parseInt(id),
     },
+    include: {
+      creator: true,
+    },
   });
   return Response.json(response);
 }

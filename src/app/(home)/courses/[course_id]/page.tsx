@@ -1,6 +1,7 @@
-import { Course as CourseType } from "@prisma/client";
 import React from "react";
-import Task from "../../_components/Task/task";
+import Tasks from "../../_components/Task/tasks";
+import CourseCard from "../../_components/Course/course-card";
+import { CourseWithCreatorType } from "@/types/types";
 
 
 const URL = process.env.NEXT_PUBLIC_API_URL
@@ -11,13 +12,11 @@ export default async function Page({
 }) {
   const course_id = (await params).course_id;
   const response = await fetch(`${URL}/api/courses/${course_id}`)
-  const data : CourseType  = await response.json()
+  const data : CourseWithCreatorType  = await response.json()
   return (
-    <div>
-      <h1>Course Detail</h1>
-      <p>{course_id}</p>
-      {JSON.stringify(data)}
-      <Task course_id={course_id}/>
+    <div className="flex flex-col gap-2">
+      <CourseCard data={data} detail/>
+      <Tasks course_id={course_id}/>
     </div>
   );
 }

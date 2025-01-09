@@ -16,6 +16,9 @@ export async function GET(req: NextRequest){
     const response = await prisma.task.findMany({
         where:{
             courseId: parseInt(course_id)
+        },
+        include:{
+            creator:true
         }
     })
 
