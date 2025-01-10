@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -9,14 +9,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { instance } from "@/lib/axios";
-import { toast } from "sonner";
 import { RevalidatePath } from "@/lib/actions";
+import { instance } from "@/lib/axios";
+import { ClassWithCreatorType } from "@/types/types";
 import { DeleteIcon } from "lucide-react";
-import { Class as ClassType} from "@prisma/client";
+import { useState } from "react";
+import { toast } from "sonner";
 
-export default function DeleteForm({ data }: { data: ClassType }) {
+export default function DeleteForm({ data }: { data: ClassWithCreatorType }) {
     const [open, setOpen] = useState(false);
   const onDelete = async () => {
     try {

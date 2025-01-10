@@ -5,7 +5,9 @@ const ClassWithCreatorType = Prisma.validator<Prisma.ClassDefaultArgs>()({
 });
 export type ClassWithCreatorType = Prisma.ClassGetPayload<
   typeof ClassWithCreatorType
->;
+>& {
+  is_password: boolean;
+};
 
 const CourseWithCreatorType = Prisma.validator<Prisma.CourseDefaultArgs>()({
   include: { creator: true },

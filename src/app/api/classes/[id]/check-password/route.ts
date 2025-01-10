@@ -11,13 +11,14 @@ export async function GET(
   console.log("== Running Check Password Class ==");
   const id = (await params).id;
 
-  const existing_class = await prisma.class.findUnique({
+  const response = await prisma.class.findUnique({
     where: {
       id: parseInt(id),
+    },
+    select: {
+      password: true
     }
   });
-  const response = {
-    password: existing_class?.password ? true : false
-  }
+
   return Response.json(response);
 }

@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { instance } from "@/lib/axios";
+import { ClassWithCreatorType } from "@/types/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -29,7 +30,7 @@ const formSchema = z.object({
   password: z.string(),
 });
 
-export default function CreateForm({ class_id,password }: { class_id:number,password: boolean }) {
+export default function CreateForm({data}:{data:ClassWithCreatorType}) {
     const [open,setOpen] = useState(false)
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -42,7 +43,7 @@ export default function CreateForm({ class_id,password }: { class_id:number,pass
     const formData = new FormData()
     formData.append("password", values.password)
     try {
-      await instance.post(`/api/enrollments?class_id=${class_id}`, formData)
+      await instance.post(`/api/enrollments?class_id=${data.id}`, formData)
       setOpen(false)
       toast.success("Enrolled successfully");
     } catch (error) {
@@ -66,7 +67,7 @@ export default function CreateForm({ class_id,password }: { class_id:number,pass
             onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-8 max-w-3xl mx-auto py-10 flex flex-col gap-2"
           >
-            {password && (
+            {data.is_password && (
               <FormField
                 control={form.control}
                 name="password"
@@ -81,7 +82,7 @@ export default function CreateForm({ class_id,password }: { class_id:number,pass
                 )}
               />
             )}
-            {!password && "Password is not needed for enroll"}
+            {!data.is_password && "Password is not needed for enroll"}
             <FormSubmitButton loading={form.formState.isSubmitting} text="Enroll"/>
           </form>
         </Form>

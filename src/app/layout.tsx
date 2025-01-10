@@ -29,7 +29,7 @@ export default function RootLayout({
           fontSans.variable
         )}
       >
- 
+        
         <Appbar />
         <div className="mt-20 container mx-auto max-w-7xl p-4">
         {children}

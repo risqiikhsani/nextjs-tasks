@@ -1,11 +1,12 @@
+import { User as UserType } from '@prisma/client'
 import { create } from 'zustand'
 
 interface DataState {
-  data: any[]
-  setData: (data: any[]) => void
+  data: UserType | undefined
+  setData: (data: UserType) => void
 }
 
 export const useDataStore = create<DataState>((set) => ({
-  data: [],
+  data: undefined,
   setData: (data) => set({ data }),
 }))

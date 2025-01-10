@@ -11,7 +11,7 @@ export async function GET(
 ) {
   console.log("== Running Get Class Detail ==");
   const id = (await params).id;
-  const response = await prisma.class.findUnique({
+  const classDetail = await prisma.class.findUnique({
     where: {
       id: parseInt(id),
     },
@@ -19,6 +19,18 @@ export async function GET(
       creator:true
     }
   });
+
+  if (!classDetail) {
+    return Response.json({ error: "Class not found" }, { status: 404 });
+  }
+
+  // Add `is_password` and remove `password`
+  const response = {
+    ...classDetail,
+    is_password: classDetail.password !== null,
+    password: undefined, // Remove the password field from the output
+  };
+
   return Response.json(response);
 }
 

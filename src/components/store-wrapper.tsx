@@ -1,16 +1,20 @@
 import { ReactNode } from "react"
 import { StoreInitializer } from "./store-initializer"
+import { cookies } from "next/headers"
 
 
-async function getData() {
-  // Your data fetching logic here
-  const res = await fetch('https://api.example.com/data')
-  return res.json()
-}
 
+
+const URL = process.env.NEXT_PUBLIC_API_URL
 export default async function StoreWrapper({children}:{children:ReactNode}) {
-  const data = await getData()
-  
+
+  const response = await fetch(`${URL}/api/me`,{
+    headers:{
+      cookie: (await cookies()).toString()
+    }
+  })
+  const data = await response.json()
+
   return (
     <main>
       <StoreInitializer data={data} />

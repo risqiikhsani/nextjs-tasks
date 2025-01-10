@@ -17,8 +17,6 @@ import { Badge } from "@/components/ui/badge";
 import { ClassWithCreatorType } from "@/types/types";
 import Join from "./join/join";
 
-
-
 export default function ClassCard({
     data,
     detail = false, // Default value for `detail`
@@ -48,15 +46,13 @@ export default function ClassCard({
             {JSON.stringify(data)}
           </CardContent>
           <CardFooter className="flex gap-2 justify-end">
-          <Join class_id={data.id}/>
+          <Join data={data}/>
             {!detail && (
               <Button asChild variant="outline">
                 <Link href={`/classes/${data.id}`}>Detail</Link>
               </Button>
             )}
-  
             <MenuWrapper>
-              
               <UpdateForm data={data} />
               <DeleteForm data={data} />
             </MenuWrapper>

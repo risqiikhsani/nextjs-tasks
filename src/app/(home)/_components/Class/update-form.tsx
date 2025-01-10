@@ -20,8 +20,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { RevalidatePath } from "@/lib/actions";
 import { instance } from "@/lib/axios";
+import { ClassWithCreatorType } from "@/types/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Class as ClassType } from "@prisma/client";
 import { EditIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -33,7 +33,7 @@ const formSchema = z.object({
   description: z.string(),
 });
 
-export default function UpdateForm({ data }: { data: ClassType }) {
+export default function UpdateForm({ data }: { data: ClassWithCreatorType }) {
   const [open, setOpen] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
