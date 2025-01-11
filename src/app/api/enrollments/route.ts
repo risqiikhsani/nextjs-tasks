@@ -3,25 +3,43 @@ import { createErrorResponse } from "@/lib/actions"
 import prisma from "@/lib/prisma"
 import { NextRequest } from "next/server"
 
-export async function GET(req: NextRequest){
+export async function GET(req: NextRequest) {
     console.log("== Running Get Enrollments ==")
-
     const searchParams = req.nextUrl.searchParams
     const class_id = searchParams.get('class_id')
-
-    if(!class_id){
-        return createErrorResponse('Class ID not found')
+    const user_id = searchParams.get('user_id')
+  
+    // Build the where clause based on provided parameters
+    const whereClause: any = {}
+  
+    if (class_id) {
+      whereClause.classId = parseInt(class_id)
     }
-
-    const response = await prisma.classEnrollment.findMany({
-        where:{
-            classId: parseInt(class_id)
-        },
-    })
-
-    return Response.json(response)
-}
-
+  
+    if (user_id) {
+      whereClause.userId = user_id
+    }
+  
+    // If neither parameter is provided, return error
+    if (Object.keys(whereClause).length === 0) {
+      return createErrorResponse('Class ID or User ID not found')
+    }
+  
+    try {
+      const response = await prisma.classEnrollment.findMany({
+        where: whereClause,
+        include:{
+            user:true,
+            class:true
+        }
+      })
+  
+      return Response.json(response)
+    } catch (error) {
+      console.error('Error fetching enrollments:', error)
+      return createErrorResponse('Failed to fetch enrollments')
+    }
+  }
 export async function POST(req: NextRequest) {
     console.log("== Running Create Enrollment ==");
 

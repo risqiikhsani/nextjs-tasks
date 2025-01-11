@@ -1,6 +1,7 @@
-import { ClassWithCreatorType } from "@/types/types";
+import { ClassType } from "@/types/types";
 import ClassCard from "./class-card";
 import CreateForm from "./create-form";
+import GuardByUserRole from "@/components/guard-by-user-role";
 
 const URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -9,14 +10,16 @@ export default async function Classes() {
 
   try {
     const response = await fetch(`${URL}/api/classes`);
-    data = (await response.json()) as ClassWithCreatorType[];
+    data = (await response.json()) as ClassType[];
   } catch (error) {
     console.error(error);
   }
 
   return (
     <div className="flex flex-col gap-2">
-      <CreateForm />
+      <GuardByUserRole allowed_roles={["ADMIN", "MODERATOR"]}>
+        <CreateForm />
+      </GuardByUserRole>
       {data &&
         data.length > 0 &&
         data.map((a, i) => <ClassCard data={a} key={i} />)}

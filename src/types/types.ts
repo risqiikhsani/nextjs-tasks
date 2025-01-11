@@ -1,24 +1,31 @@
 import { Prisma } from "@prisma/client";
 
-const ClassWithCreatorType = Prisma.validator<Prisma.ClassDefaultArgs>()({
+const ClassType = Prisma.validator<Prisma.ClassDefaultArgs>()({
   include: { creator: true },
 });
-export type ClassWithCreatorType = Prisma.ClassGetPayload<
-  typeof ClassWithCreatorType
+export type ClassType = Prisma.ClassGetPayload<
+  typeof ClassType
 >& {
   is_password: boolean;
 };
 
-const CourseWithCreatorType = Prisma.validator<Prisma.CourseDefaultArgs>()({
+const CourseType = Prisma.validator<Prisma.CourseDefaultArgs>()({
   include: { creator: true },
 });
-export type CourseWithCreatorType = Prisma.CourseGetPayload<
-  typeof CourseWithCreatorType
+export type CourseType = Prisma.CourseGetPayload<
+  typeof CourseType
 >;
 
-const TaskWithCreatorType = Prisma.validator<Prisma.TaskDefaultArgs>()({
+const TaskType = Prisma.validator<Prisma.TaskDefaultArgs>()({
   include: { creator: true },
 });
-export type TaskWithCreatorType = Prisma.TaskGetPayload<
-  typeof CourseWithCreatorType
+export type TaskType = Prisma.TaskGetPayload<
+  typeof TaskType
+>;
+
+const ClassEnrollmentType = Prisma.validator<Prisma.ClassEnrollmentDefaultArgs>()({
+  include: { user: true,class:true },
+});
+export type ClassEnrollmentType = Prisma.ClassEnrollmentGetPayload<
+  typeof ClassEnrollmentType
 >;

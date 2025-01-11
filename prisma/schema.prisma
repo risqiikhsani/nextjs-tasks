@@ -17,6 +17,11 @@ enum UserRole {
   ADMIN
 }
 
+enum EnrollmentRole {
+  CREATOR
+  MEMBER
+}
+
 enum TaskType {
   READING
   MEETING
@@ -40,7 +45,6 @@ model User {
   createdCourses Course[] @relation("CourseCreator")
   createdTasks   Task[]   @relation("TaskCreator")
   createdNotes   Note[]   @relation("NoteCreator")
-
 
   // Many-to-Many relationships for enrollments
   enrolledClasses ClassEnrollment[]
@@ -66,10 +70,10 @@ model Note {
 }
 
 model Class {
-  id                  Int      @id @default(autoincrement())
-  name                String
-  description         String?
-  password            String?
+  id          Int     @id @default(autoincrement())
+  name        String
+  description String?
+  password    String?
 
   // Relationship with creator (only Admin can create)
   creator   User   @relation("ClassCreator", fields: [creatorId], references: [id])
@@ -83,7 +87,6 @@ model Class {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
 }
 
 // model Join {
@@ -99,7 +102,7 @@ model Course {
   description String?
 
   // Relationship with parent class
-  class   Class @relation("ClassCourses", fields: [classId], references: [id])
+  class   Class @relation("ClassCourses", fields: [classId], references: [id], onDelete: Cascade)
   classId Int
 
   // Relationship with creator (only Admin can create)
@@ -130,7 +133,7 @@ model Task {
   isActive Boolean @default(true)
 
   // Relationship with parent Course
-  course   Course @relation("CourseTasks", fields: [courseId], references: [id])
+  course   Course @relation("CourseTasks", fields: [courseId], references: [id], onDelete: Cascade)
   courseId Int
 
   // Relationship with creator (only Admin can create)
@@ -165,12 +168,13 @@ model TaskSubmission {
 }
 
 model ClassEnrollment {
-  id         Int      @id @default(autoincrement())
-  user       User     @relation(fields: [userId], references: [id])
+  id         Int            @id @default(autoincrement())
+  user       User           @relation(fields: [userId], references: [id])
   userId     String
-  class      Class    @relation(fields: [classId], references: [id])
+  class      Class          @relation(fields: [classId], references: [id], onDelete: Cascade)
   classId    Int
-  enrolledAt DateTime @default(now())
+  enrolledAt DateTime       @default(now())
+  role       EnrollmentRole @default(MEMBER)
 
   @@unique([userId, classId])
 }

@@ -21,7 +21,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { RevalidatePath } from "@/lib/actions";
 import { instance } from "@/lib/axios";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { PlusCircleIcon } from "lucide-react";
+import { Course as CourseType } from "@prisma/client";
+import { EditIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -32,29 +33,32 @@ const formSchema = z.object({
   description: z.string(),
 });
 
-export default function CreateForm({class_id}:{class_id:string}) {
+export default function UpdateForm({ data }: { data: CourseType }) {
   const [open, setOpen] = useState(false);
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
       description: "",
     },
+    values: {
+      name: data.name!,
+      description: data.description!,
+    },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log(`Updating course of id : ${data.id}`);
     try {
       console.log(values);
       const formData = new FormData()
-      formData.append("name", values.name)
+      formData.append("name", values.name) 
       formData.append("description", values.description)
-
-      await instance.post(`/api/courses?class_id=${class_id}`, formData);
-      form.reset();
+      await instance.put(`/api/courses/${data.id}`, formData);
       RevalidatePath("/classes");
+      form.reset();
       setOpen(false);
-      toast.success("Class created successfully");
+      toast.success("Course updated successfully");
     } catch (error) {
       console.error("Form submission error", error);
       toast.error("Failed to submit the form. Please try again.");
@@ -64,11 +68,16 @@ export default function CreateForm({class_id}:{class_id:string}) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button><PlusCircleIcon/>Create New Course</Button>
+        <Button variant="outline">
+          <EditIcon />
+          Update
+        </Button>
       </DialogTrigger>
-      <DialogContent className={"lg:max-w-screen-lg overflow-y-scroll max-h-screen"}>
+      <DialogContent
+        className={"lg:max-w-screen-lg overflow-y-scroll max-h-screen"}
+      >
         <DialogHeader>
-          <DialogTitle>Create new Course</DialogTitle>
+          <DialogTitle>Update Course</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form
@@ -80,7 +89,7 @@ export default function CreateForm({class_id}:{class_id:string}) {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Course Name</FormLabel>
+                  <FormLabel>name</FormLabel>
                   <FormControl>
                     <Input placeholder="" type="text" {...field} />
                   </FormControl>
@@ -95,9 +104,9 @@ export default function CreateForm({class_id}:{class_id:string}) {
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Course Description</FormLabel>
+                  <FormLabel>description</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="" {...field}/>
+                    <Textarea placeholder="" {...field} />
                   </FormControl>
 
                   <FormMessage />

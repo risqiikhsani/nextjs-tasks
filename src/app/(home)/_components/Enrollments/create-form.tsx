@@ -64,11 +64,11 @@ export default function CreateForm({class_id}:{class_id:string}) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button><PlusCircleIcon/>Create New Course</Button>
+        <Button variant="outline"><PlusCircleIcon/>Add Member</Button>
       </DialogTrigger>
       <DialogContent className={"lg:max-w-screen-lg overflow-y-scroll max-h-screen"}>
         <DialogHeader>
-          <DialogTitle>Create new Course</DialogTitle>
+          <DialogTitle>Add new member</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form

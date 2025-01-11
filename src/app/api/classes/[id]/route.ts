@@ -86,11 +86,19 @@ export async function DELETE(
   console.log("== Running Delete Class ==");
   const id = (await params).id;
 
-  await prisma.class.delete({
-    where: {
-      id: parseInt(id),
-    },
-  });
+
+
+  try {
+    await prisma.class.delete({
+      where: {
+        id: parseInt(id),
+      },
+    });    
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error("Error: ", error.stack);
+    }
+  }
 
   return Response.json("Deleted");
 }

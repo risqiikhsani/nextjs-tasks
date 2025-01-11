@@ -11,12 +11,12 @@ import {
 } from "@/components/ui/dialog";
 import { RevalidatePath } from "@/lib/actions";
 import { instance } from "@/lib/axios";
-import { ClassWithCreatorType } from "@/types/types";
+import { ClassType } from "@/types/types";
 import { DeleteIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
-export default function DeleteForm({ data }: { data: ClassWithCreatorType }) {
+export default function DeleteForm({ data }: { data: ClassType }) {
     const [open, setOpen] = useState(false);
   const onDelete = async () => {
     try {

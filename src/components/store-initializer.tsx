@@ -1,16 +1,38 @@
-'use client'
-import { useRef } from 'react'
-import { useDataStore } from '@/stores/data'
-import { User as UserType } from '@prisma/client'
+"use client";
+import { useDataStore } from "@/stores/data";
+import {
+  ClassEnrollment as ClassEnrollmentType,
+  User as UserType,
+} from "@prisma/client";
+import { useEffect, useRef } from "react";
 
-export function StoreInitializer({ data }: { data: UserType }) {
-  const {setData} = useDataStore((state) => state)
-  const initialized = useRef(false)
+export function StoreInitializer({
+  user,
+  enrollments,
+}: {
+  user: UserType;
+  enrollments: ClassEnrollmentType[];
+}) {
+  // const initialized = useRef(false);
+
+  // useEffect(() => {
+  //   if (!initialized.current) {
+  //     useDataStore.setState({ user, enrollments });
+  //     initialized.current = true;
+  //   }
+  // }, [user, enrollments]);
+
+  // useEffect(() => {
+  //   if (!initialized.current) {
+  //     useDataStore.setState({ user, enrollments })
+  //     initialized.current = true
+  //   }
+  // }, [user, enrollments])
   
-  if (!initialized.current) {
-    setData(data)
-    initialized.current = true
-  }
-  
-  return null
+  // Also update when props change, even after initialization
+  useEffect(() => {
+    useDataStore.setState({ user, enrollments })
+  }, [user, enrollments])
+
+  return null;
 }
