@@ -1,4 +1,6 @@
 import { auth } from "@/auth";
+import { createErrorResponse } from "@/lib/actions";
+import logger from "@/lib/logger";
 import prisma from "@/lib/prisma";
 
 export async function GET(
@@ -9,29 +11,29 @@ export async function GET(
     params: Promise<{ id: string }>;
   }
 ) {
-  console.log("== Running Get Class Detail ==");
+  logger.info("== Get Class Detail ==");
   const id = (await params).id;
-  const classDetail = await prisma.class.findUnique({
-    where: {
-      id: parseInt(id),
-    },
-    include:{
-      creator:true
-    }
-  });
 
-  if (!classDetail) {
-    return Response.json({ error: "Class not found" }, { status: 404 });
+  try {
+    const classDetail = await prisma.class.findUnique({
+      where: {
+        id: parseInt(id),
+      },
+      include: {
+        creator: true,
+      },
+    });
+    // Add `is_password` and remove `password`
+    const response = {
+      ...classDetail,
+      is_password: classDetail?.password !== null,
+      password: undefined, // Remove the password field from the output
+    };
+
+    return Response.json(response);
+  } catch (error) {
+    logger.error("error get class: ", error);
   }
-
-  // Add `is_password` and remove `password`
-  const response = {
-    ...classDetail,
-    is_password: classDetail.password !== null,
-    password: undefined, // Remove the password field from the output
-  };
-
-  return Response.json(response);
 }
 
 export async function PUT(
@@ -42,7 +44,7 @@ export async function PUT(
     params: Promise<{ id: string }>;
   }
 ) {
-  console.log("== Running Put Class ==");
+  logger.info("== Put Class ==");
   const id = (await params).id;
 
   const formData = await req.formData();
@@ -54,7 +56,7 @@ export async function PUT(
     throw Error;
   }
 
-  console.log("== Passed the body checks ==");
+  logger.info("== Passed the body checks ==");
 
   try {
     await prisma.class.update({
@@ -70,7 +72,7 @@ export async function PUT(
     return Response.json("Updated");
   } catch (error) {
     if (error instanceof Error) {
-      console.error("Error: ", error.stack);
+      logger.error("error update class: ", error.stack);
     }
   }
 }
@@ -83,22 +85,19 @@ export async function DELETE(
     params: Promise<{ id: string }>;
   }
 ) {
-  console.log("== Running Delete Class ==");
+  logger.info("== Delete Class ==");
   const id = (await params).id;
-
-
 
   try {
     await prisma.class.delete({
       where: {
         id: parseInt(id),
       },
-    });    
+    });
+    return Response.json("Deleted");
   } catch (error) {
     if (error instanceof Error) {
-      console.error("Error: ", error.stack);
+      logger.error("error delete class: ", error.stack);
     }
   }
-
-  return Response.json("Deleted");
 }

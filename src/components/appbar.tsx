@@ -4,6 +4,7 @@ import { Button } from "./ui/button";
 import Link from "next/link";
 import SearchBar from "./search-bar";
 import StoreWrapper from "./store-wrapper";
+import { Badge } from "./ui/badge";
 
 export default async function Appbar() {
   const session = await auth();
@@ -13,7 +14,11 @@ export default async function Appbar() {
     <div className="p-4 fixed w-full top-0 start-0 z-50 shadow-xl opacity-100 bg-slate-50 ">
       {session?.user ? (
         <div className="flex justify-between items-center">
-        <p>welcome, {session.user.name} role : {session.user.role}</p>
+          <div>
+          <p>welcome, {session.user.name} </p>
+          <Badge>{session.user.role.toLowerCase()}</Badge>
+          </div>
+
         <SearchBar/>
         <SignOut/>
         </div>

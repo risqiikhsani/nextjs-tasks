@@ -1,3 +1,6 @@
+"use client"
+
+
 import * as React from "react";
 import { FolderIcon, GalleryVerticalEnd } from "lucide-react";
 
@@ -15,6 +18,7 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 
 // This is sample data.
 const data = {
@@ -22,8 +26,19 @@ const data = {
     {
       title: "Dashboard",
       url: "/",
-      items: [],
+      items: [
+        {
+          title: "Organizations",
+          url: "/orgs",
+        },
+        {
+          title: "Settings",
+          url: "/settings",
+        },
+      ],
     },
+  ],
+  orgMain: [
     {
       title: "Earth",
       url: "#",
@@ -117,6 +132,9 @@ const data = {
 export default function AppSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
+  const params = useParams<{ organization_id: string }>();
+  console.log(params);
+
   return (
     <Sidebar {...props}>
       <SidebarHeader>
@@ -162,6 +180,30 @@ export default function AppSidebar({
                 ) : null}
               </SidebarMenuItem>
             ))}
+            {params.organization_id &&
+              data.orgMain.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild>
+                    <Link href={item.url} className="font-medium">
+                      {item.title}
+                    </Link>
+                  </SidebarMenuButton>
+                  {item.items?.length ? (
+                    <SidebarMenuSub>
+                      {item.items.map((item) => (
+                        <SidebarMenuSubItem key={item.title}>
+                          <SidebarMenuSubButton asChild>
+                            <Link href={`/orgs/${params.organization_id}${item.url}`}>
+                              <FolderIcon />
+                              {item.title}
+                            </Link>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                      ))}
+                    </SidebarMenuSub>
+                  ) : null}
+                </SidebarMenuItem>
+              ))}
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>

@@ -1,10 +1,23 @@
 import { auth } from "@/auth";
 import { createErrorResponse } from "@/lib/actions";
+import logger from "@/lib/logger";
 import prisma from "@/lib/prisma";
+import { NextRequest } from "next/server";
 
-export async function GET() {
-  console.log("== Running Get Class ==");
+export async function GET(request:NextRequest) {
+  logger.info("== Get Classes ==");
+
+  const searchParams = request.nextUrl.searchParams
+  const organization_id = searchParams.get('organization_id') 
+
+  if(!organization_id){
+    return createErrorResponse("Organization ID not provided", 400)
+  }
+
   const classes = await prisma.class.findMany({
+    where: {
+      orgId: organization_id,
+    },
     include: {
       creator: true,
     },
@@ -21,7 +34,7 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  console.log("== Running Post Class ==");
+  logger.info("== Post Class ==");
 
   const session = await auth();
   if (!session) {
@@ -41,8 +54,28 @@ export async function POST(req: Request) {
   const name = formData.get("name")?.toString();
   const description = formData.get("description")?.toString();
   const password = formData.get("password")?.toString();
+  const orgId = formData.get("organization_id")?.toString();
 
-  if (!name || !description) {
+  const org = await prisma.organization.findUnique({
+    where: {
+      id: orgId,
+    },
+  });
+  if (!org) {
+    return createErrorResponse("Organization not found");
+  }
+  const members = await prisma.organizationMember.findMany({
+    where: {
+      orgId: orgId,
+    },
+  });
+  const memberIds = members.map((member) => member.userId);
+  if (!memberIds.includes(user.id)) {
+    return createErrorResponse("User not a member of the organization");
+  }
+
+
+  if (!orgId || !name || !description) {
     return Response.json("");
   }
 
@@ -56,6 +89,7 @@ export async function POST(req: Request) {
           description,
           password,
           creatorId: user.id,
+          orgId:orgId
         },
       });
 
@@ -74,7 +108,7 @@ export async function POST(req: Request) {
     return Response.json("Created");
   } catch (error) {
     if (error instanceof Error) {
-      console.error("Error: ", error.stack);
+      logger.error("Error Post Class: ", error.stack);
     }
   }
 }

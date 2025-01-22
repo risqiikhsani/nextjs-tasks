@@ -1,3 +1,4 @@
+import logger from "@/lib/logger";
 import prisma from "@/lib/prisma";
 import { NextRequest } from "next/server";
 export async function GET(
@@ -8,7 +9,7 @@ export async function GET(
     params: Promise<{ id: string }>;
   }
 ) {
-  console.log("== Running Check Password Class ==");
+  logger.info("== Check Password Class ==");
   const id = (await params).id;
 
   const response = await prisma.class.findUnique({

@@ -2,15 +2,18 @@
 import { useDataStore } from "@/stores/data";
 import {
   ClassEnrollment as ClassEnrollmentType,
+  OrganizationMember as OrganizationMemberType,
   User as UserType,
 } from "@prisma/client";
 import { useEffect, useRef } from "react";
 
 export function StoreInitializer({
   user,
+  orgs,
   enrollments,
 }: {
   user: UserType;
+  orgs: OrganizationMemberType[];
   enrollments: ClassEnrollmentType[];
 }) {
   // const initialized = useRef(false);
@@ -31,8 +34,8 @@ export function StoreInitializer({
   
   // Also update when props change, even after initialization
   useEffect(() => {
-    useDataStore.setState({ user, enrollments })
-  }, [user, enrollments])
+    useDataStore.setState({ user,orgs,enrollments })
+  }, [user, orgs, enrollments])
 
   return null;
 }

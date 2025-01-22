@@ -1,13 +1,10 @@
+import { createErrorResponse } from "@/lib/actions";
+import logger from "@/lib/logger";
 import prisma from "@/lib/prisma";
 
-function jsonResponse(status: number, message: string, error?: string) {
-    return new Response(JSON.stringify({ status, message, error }), {
-        status,
-        headers: { "Content-Type": "application/json" }
-    });
-}
 
 export async function GET(request: Request, { params }: { params: { id: string } }) {
+    logger.info("== Get User Detail ==")
     const { id } = params;
 
     try {
@@ -16,12 +13,12 @@ export async function GET(request: Request, { params }: { params: { id: string }
         });
 
         if (!user) {
-            return jsonResponse(404, "user not found");
+            return createErrorResponse( "user not found", 404);
         }
 
         return Response.json(user);
     } catch (error) {
-        console.error("Error getting user:", error);
-        return jsonResponse(500, "Error getting user");
+        logger.error("Error get user detail:", error);
+        return createErrorResponse("Error getting user", 500);
     }
 }

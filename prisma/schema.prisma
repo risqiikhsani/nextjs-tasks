@@ -17,8 +17,15 @@ enum UserRole {
   ADMIN
 }
 
-enum EnrollmentRole {
+enum ClassRole {
   CREATOR
+  ADMIN
+  MEMBER
+}
+
+enum OrgRole {
+  CREATOR
+  ADMIN
   MEMBER
 }
 
@@ -31,6 +38,42 @@ enum TaskType {
   EXAM
 }
 
+model OrganizationSettings {
+  id Int @id @unique @default(autoincrement())
+
+  // 1 to 1 Organization
+  org   Organization @relation(fields: [orgId], references: [id])
+  orgId String       @unique
+
+  private         Boolean @default(false)
+  join_permission Boolean @default(false)
+  enable_qna      Boolean @default(false)
+  enable_ai       Boolean @default(false)
+}
+
+model Organization {
+  id          String  @id @unique @default(uuid())
+  name        String?
+  description String?
+  picture     String?
+  address     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationship with creator (only Admin can create)
+  creator   User   @relation("OrgCreator", fields: [creatorId], references: [id])
+  creatorId String
+
+  classes Class[] @relation("OrganizationClass")
+
+  // 1 to 1 organization settings
+  settings OrganizationSettings?
+
+  members  OrganizationMember[]
+  requests JoinRequest[]
+}
+
 model User {
   id              String   @id @unique @default(uuid())
   email           String   @unique
@@ -41,19 +84,22 @@ model User {
   profile_picture String?
 
   // Relationships
-  createdClasses Class[]  @relation("ClassCreator")
-  createdCourses Course[] @relation("CourseCreator")
-  createdTasks   Task[]   @relation("TaskCreator")
-  createdNotes   Note[]   @relation("NoteCreator")
+  createdOrgs    Organization[] @relation("OrgCreator")
+  createdClasses Class[]        @relation("ClassCreator")
+  createdCourses Course[]       @relation("CourseCreator")
+  createdTasks   Task[]         @relation("TaskCreator")
+  createdNotes   Note[]         @relation("NoteCreator")
 
   // Many-to-Many relationships for enrollments
   enrolledClasses ClassEnrollment[]
+  joinedOrgs      OrganizationMember[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   // for students
   submittedTasks TaskSubmission[] @relation("TaskSubmitter")
+  JoinRequest    JoinRequest[]
 }
 
 model Note {
@@ -79,11 +125,14 @@ model Class {
   creator   User   @relation("ClassCreator", fields: [creatorId], references: [id])
   creatorId String
 
+  org   Organization @relation("OrganizationClass", fields: [orgId], references: [id])
+  orgId String
+
   // Courses within this class
   courses Course[] @relation("ClassCourses")
 
   // Students enrolled in this class
-  enrollments ClassEnrollment[]
+  members ClassEnrollment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -168,13 +217,37 @@ model TaskSubmission {
 }
 
 model ClassEnrollment {
-  id         Int            @id @default(autoincrement())
-  user       User           @relation(fields: [userId], references: [id])
-  userId     String
-  class      Class          @relation(fields: [classId], references: [id], onDelete: Cascade)
-  classId    Int
-  enrolledAt DateTime       @default(now())
-  role       EnrollmentRole @default(MEMBER)
+  id       Int       @id @default(autoincrement())
+  user     User      @relation(fields: [userId], references: [id])
+  userId   String
+  class    Class     @relation(fields: [classId], references: [id], onDelete: Cascade)
+  classId  Int
+  joinedAt DateTime  @default(now())
+  role     ClassRole @default(MEMBER)
 
   @@unique([userId, classId])
+}
+
+model OrganizationMember {
+  id       Int          @id @default(autoincrement())
+  user     User         @relation(fields: [userId], references: [id])
+  userId   String
+  org      Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  orgId    String
+  role     OrgRole      @default(MEMBER)
+  joinedAt DateTime     @default(now())
+
+  @@unique([userId, orgId])
+}
+
+model JoinRequest {
+  id        Int          @id @default(autoincrement())
+  user      User         @relation(fields: [userId], references: [id])
+  userId    String
+  org       Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  orgId     String
+  createdAt DateTime     @default(now())
+  message   String?
+
+  @@unique([userId,orgId])
 }

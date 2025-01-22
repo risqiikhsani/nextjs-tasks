@@ -1,10 +1,11 @@
 import { auth } from "@/auth"
 import { createErrorResponse } from "@/lib/actions"
+import logger from "@/lib/logger"
 import prisma from "@/lib/prisma"
 import { NextRequest } from "next/server"
 
 export async function GET(req: NextRequest){
-    console.log("== Running Get Tasks ==")
+    logger.info("== Get Tasks ==")
 
     const searchParams = req.nextUrl.searchParams
     const course_id = searchParams.get('course_id')
@@ -26,7 +27,7 @@ export async function GET(req: NextRequest){
 }
 
 export async function POST(req:NextRequest){
-    console.log("== Running Post Task ==")
+    logger.info("== Post Task ==")
 
     const searchParams = req.nextUrl.searchParams
     const course_id = searchParams.get('course_id')
@@ -69,7 +70,6 @@ export async function POST(req:NextRequest){
     
         return Response.json("Created")
     } catch (error) {
-        console.log("Error post task: ", error)
-        console.error(error)
+        logger.error("Error post task: ", error)
     }
 }

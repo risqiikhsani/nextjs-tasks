@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import { createErrorResponse } from "@/lib/actions";
+import logger from "@/lib/logger";
 import prisma from "@/lib/prisma";
 import { NextRequest } from "next/server";
 
@@ -11,7 +12,7 @@ export async function GET(
     params: Promise<{ id: string }>;
   }
 ) {
-  console.log("== Running Get Course Detail ==");
+  logger.info("== Get Course Detail ==");
   const id = (await params).id;
 
   const response = await prisma.course.findUnique({
@@ -33,7 +34,7 @@ export async function PUT(
     params: Promise<{ id: string }>;
   }
 ) {
-  console.log("== Running Put Course ==");
+  logger.info("== Put Course ==");
   const id = (await params).id;
 
   const formData = await req.formData();
@@ -44,7 +45,7 @@ export async function PUT(
     throw Error;
   }
 
-  console.log("== Passed the body checks ==");
+  logger.info("== Passed the body checks ==");
 
   try {
     await prisma.course.update({
@@ -59,7 +60,7 @@ export async function PUT(
     return Response.json("Updated");
   } catch (error) {
     if (error instanceof Error) {
-      console.error("Error: ", error.stack);
+      logger.error("error update course: ", error.stack);
     }
   }
 }
@@ -72,14 +73,19 @@ export async function DELETE(
     params: Promise<{ id: string }>;
   }
 ) {
-  console.log("== Running Delete Course ==");
+  logger.info("== Delete Course ==");
   const id = (await params).id;
 
-  await prisma.class.delete({
-    where: {
-      id: parseInt(id),
-    },
-  });
 
-  return Response.json("Deleted");
+  try {
+    await prisma.course.delete({
+      where: {
+        id: parseInt(id),
+      },
+    });
+  
+    return Response.json("Deleted");    
+  } catch (error) {
+    logger.error("error delete course: ", error);
+  }
 }

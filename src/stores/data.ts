@@ -1,16 +1,20 @@
-import { ClassEnrollment as ClassEnrollmentType, User as UserType } from '@prisma/client'
+import { ClassEnrollment as ClassEnrollmentType, OrganizationMember as OrganizationMemberType, User as UserType } from '@prisma/client'
 import { create } from 'zustand'
 
 interface DataState {
   user: UserType | undefined
-  enrollments: ClassEnrollmentType[] | undefined
   setUser: (user: UserType) => void
-  setEnrollments: (enrollments: ClassEnrollmentType[]) => void
+  orgs:OrganizationMemberType[] | undefined
+  setOrganizations : (orgs:OrganizationMemberType[]) => void
+  enrollments: ClassEnrollmentType[] | undefined
+  setClasses: (enrollments: ClassEnrollmentType[]) => void
 }
 
 export const useDataStore = create<DataState>((set) => ({
   user: undefined,
   setUser: (user) => set({ user }),
+  orgs: undefined,
+  setOrganizations: (orgs) => set({ orgs }),
   enrollments: undefined,
-  setEnrollments: (enrollments) => set({ enrollments })
+  setClasses: (enrollments) => set({ enrollments })
 }))

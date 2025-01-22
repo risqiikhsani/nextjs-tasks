@@ -1,5 +1,12 @@
 import { Prisma } from "@prisma/client";
 
+const OrganizationType = Prisma.validator<Prisma.OrganizationDefaultArgs>()({
+  include: { creator: true },
+});
+export type OrganizationType = Prisma.OrganizationGetPayload<
+  typeof OrganizationType
+>;
+
 const ClassType = Prisma.validator<Prisma.ClassDefaultArgs>()({
   include: { creator: true },
 });
@@ -28,4 +35,18 @@ const ClassEnrollmentType = Prisma.validator<Prisma.ClassEnrollmentDefaultArgs>(
 });
 export type ClassEnrollmentType = Prisma.ClassEnrollmentGetPayload<
   typeof ClassEnrollmentType
+>;
+
+const OrganizationMemberType = Prisma.validator<Prisma.OrganizationMemberDefaultArgs>()({
+  include: { user: true,org:true },
+});
+export type OrganizationMemberType = Prisma.OrganizationMemberGetPayload<
+  typeof OrganizationMemberType
+>;
+
+const JoinRequestType = Prisma.validator<Prisma.JoinRequestDefaultArgs>()({
+  include: { user: true,org:true },
+});
+export type JoinRequestType = Prisma.JoinRequestGetPayload<
+  typeof JoinRequestType
 >;

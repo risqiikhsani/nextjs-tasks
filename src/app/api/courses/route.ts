@@ -1,10 +1,11 @@
 import { auth } from "@/auth"
 import { createErrorResponse } from "@/lib/actions"
+import logger from "@/lib/logger"
 import prisma from "@/lib/prisma"
 import { NextRequest } from "next/server"
 
 export async function GET(req: NextRequest){
-    console.log("== Running Get Courses ==")
+    logger.info("== Get Courses ==")
 
     const searchParams = req.nextUrl.searchParams
     const class_id = searchParams.get('class_id')
@@ -26,7 +27,7 @@ export async function GET(req: NextRequest){
 }
 
 export async function POST(req:NextRequest){
-    console.log("== Running Post Course ==")
+    logger.info("== Post Course ==")
 
     const searchParams = req.nextUrl.searchParams
     const class_id = searchParams.get('class_id')
@@ -69,7 +70,6 @@ export async function POST(req:NextRequest){
     
         return Response.json("Created")
     } catch (error) {
-        console.log("Error post course: ", error)
-        console.error(error)
+        logger.error("error post course",error)
     }
 }
