@@ -20,22 +20,11 @@ export default function OrgCard({
 }) {
   return (
     <div>
-      <Card className="p-4">
+      <Card className="flex flex-col gap-2 items-center justify-center p-4">
         <Badge className="">Organization</Badge>
         <h1 className="flex gap-2 items-center text-4xl font-bold">
           {data.name} <span></span>
         </h1>
-
-        {detail && (
-          <div>
-            <p className="text-sm text-muted-foreground">
-              Creator : {data.creator.name}
-            </p>
-            <p className="text-sm text-muted-foreground">
-              {ConvertDate(data.createdAt)}
-            </p>
-          </div>
-        )}
 
         {data.description}
 

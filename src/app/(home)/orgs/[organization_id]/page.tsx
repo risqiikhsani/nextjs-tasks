@@ -1,22 +1,15 @@
-import GetDataStore from "@/components/get-data-store";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { OrganizationType } from "@/types/types";
-import Link from "next/link";
+import OrgCard from "@/components/global/Orgs/org-card";
+import Requests from "@/components/global/Requests/requests";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import Requests from "@/components/global/Requests/requests";
+import { OrganizationType } from "@/types/types";
+import Link from "next/link";
 
 const URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -31,68 +24,34 @@ export default async function Page({
   const data: OrganizationType = await response.json();
 
   return (
-    <div className="grid grid-cols-2 gap-2">
-      <GetDataStore />
+    <div className="flex flex-col gap-2">
+      {data && <OrgCard data={data} detail={true} />}
 
-      {data && JSON.stringify(data)}
+      <div className="grid grid-cols-2 gap-2">
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button variant="outline">User Join Requests</Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>List of join requests</DialogTitle>
+            </DialogHeader>
+            <Requests organization_id={organization_id} />
+          </DialogContent>
+        </Dialog>
 
-      <Dialog>
-        <DialogTrigger>Requests</DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>List of join requests</DialogTitle>
-          </DialogHeader>
-          <Requests organization_id={organization_id} />
-        </DialogContent>
-      </Dialog>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>All Users</CardTitle>
-          <CardDescription>List of users</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Link href="/users">See more</Link>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle>All Classes</CardTitle>
-          <CardDescription>List of classes</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Link href="/classes">See more</Link>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle>My Classes</CardTitle>
-          <CardDescription>List of classes</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Link href="/my-classes">See more</Link>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle>My Tasks</CardTitle>
-          <CardDescription>
-            List of incomplete and completed tasks{" "}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Link href="/tasks">See more</Link>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle>Analytics</CardTitle>
-          <CardDescription>Graph of</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Link href="/submitted-tasks">See more</Link>
-        </CardContent>
-      </Card>
+        <Button asChild variant="outline">
+          <Link href={`/orgs/${organization_id}/users`}>Members</Link>
+        </Button>
+        <Button asChild variant="outline">
+          <Link href={`/orgs/${organization_id}/classes`}>Classes</Link>
+        </Button>
+        <Button asChild variant="outline">
+          <Link href={`/orgs/${organization_id}/qna`}>
+            Questions & Answers (Q&A)
+          </Link>
+        </Button>
+      </div>
     </div>
   );
 }

@@ -40,9 +40,13 @@ const data = {
   ],
   orgMain: [
     {
-      title: "Earth",
+      title: "Organization",
       url: "#",
       items: [
+        {
+          title: "Home",
+          url: "/",
+        },
         {
           title: "Classes",
           url: "/classes",
@@ -59,7 +63,7 @@ const data = {
       ],
     },
     {
-      title: "Main Features",
+      title: "My Class Routines",
       url: "#",
       items: [
         {
@@ -84,30 +88,7 @@ const data = {
         },
       ],
     },
-    {
-      title: "Private",
-      url: "#",
-      items: [
-        {
-          title: "Notes",
-          url: "/notes",
-        },
-      ],
-    },
-    {
-      title: "Admin Features",
-      url: "#",
-      items: [
-        {
-          title: "News",
-          url: "/news",
-        },
-        {
-          title: "Analytics",
-          url: "/analytics",
-        },
-      ],
-    },
+    
     {
       title: "AI tools",
       url: "#",

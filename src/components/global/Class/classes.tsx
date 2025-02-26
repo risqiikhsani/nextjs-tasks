@@ -17,7 +17,7 @@ export default async function Classes({organization_id}:{organization_id:string}
 
   return (
     <div className="flex flex-col gap-2">
-        <CreateForm />
+        <CreateForm organization_id={organization_id}/>
       <div className="grid md:grid-cols-2 gap-2">
       {data &&
         data.length > 0 &&
